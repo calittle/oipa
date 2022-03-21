@@ -73,6 +73,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Oracle Database password for SYS, SYSTEM and PDBADMIN accounts
   # If left blank, the password will be generated automatically
+  ## NOTE: If you need to reprovision, and you have already established the 
+  ## database password, you need to fill it in here!
   VM_ORACLE_PWD = default_s('VM_ORACLE_PWD', '')
 
   # Oracle Middleware home directory
