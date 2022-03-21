@@ -21,8 +21,8 @@ echo 'INSTALLER: Started up'
 # Since we are sizing up to 8GB for running DB+WLS, we need to increase swap space
 # Normally we would do this in the OS (OEL7) but since that box is controlled by
 # another group we'll manually adjust it here.
-if [ -f "$/swapfile" ]; then
-    echo 'INSTALLER: extra swap file exists.'
+if [ -f "/swapfile" ]; then
+  echo 'INSTALLER: extra swap file exists.'
 else 
   echo 'INSTALLER: adjusting swap'
   fallocate -l 4G /swapfile
