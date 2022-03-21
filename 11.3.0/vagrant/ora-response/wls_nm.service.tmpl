@@ -1,0 +1,14 @@
+[Unit]
+Description=WebLogic Nodemanager service
+
+[Service]
+Type=simple
+WorkingDirectory=###ORACLE_HOME###/domains/###MW_DOMAIN###
+ExecStart=###ORACLE_HOME###/domains/###MW_DOMAIN###/bin/startNodeManager.sh
+ExecStop=###ORACLE_HOME###/domains/###MW_DOMAIN###/bin/stopNodeManager.sh
+User=oracle
+Group=oinstall
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
