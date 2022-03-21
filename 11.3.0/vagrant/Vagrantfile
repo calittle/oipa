@@ -17,6 +17,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+#VAGRANT_LOG=debug
+
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
@@ -38,7 +40,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   VM_NAME = default_s('VM_NAME', 'oipa-vagrant')
 
   # Memory for the VM 
-  VM_MEMORY = default_i('VM_MEMORY', 8096)
+  VM_MEMORY = default_i('VM_MEMORY', 8192) 
 
   # VM time zone
   # If not specified, will be set to match host time zone (if possible)
@@ -124,11 +126,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = BOX_NAME
   config.vm.box_url = "#{BOX_URL}/#{BOX_NAME}.json"
   config.vm.define VM_NAME
-  config.ssh.forward_agent = true
-  config.ssh.forward_x11 = true
-  config.vm.network :forwarded_port, guest: VM_WLS_PORT_ADMIN, host: VM_WLS_PORT_ADMIN, auto_correct: true    # WebLogic Console
-  config.vm.network :forwarded_port, guest: VM_WLS_OIPA_PORT, host: VM_WLS_OIPA_PORT, auto_correct: true  # PAS
-  config.vm.network :forwarded_port, guest: VM_WLS_PALETTECONFIG_PORT, host: VM_WLS_PALETTECONFIG_PORT, auto_correct: true  # PaletteConfig
   
   # Provider-specific configuration
   config.vm.provider "virtualbox" do |v|
@@ -189,7 +186,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Oracle port forwarding
   config.vm.network "forwarded_port", guest: VM_LISTENER_PORT, host: VM_LISTENER_PORT
   config.vm.network "forwarded_port", guest: VM_EM_EXPRESS_PORT, host: VM_EM_EXPRESS_PORT
-
+  config.ssh.forward_agent = true
+  config.ssh.forward_x11 = true
+  config.vm.network :forwarded_port, guest: VM_WLS_PORT_ADMIN, host: VM_WLS_PORT_ADMIN, auto_correct: true    # WebLogic Console
+  config.vm.network :forwarded_port, guest: VM_WLS_OIPA_PORT, host: VM_WLS_OIPA_PORT, auto_correct: true  # PAS
+  config.vm.network :forwarded_port, guest: VM_WLS_PALETTECONFIG_PORT, host: VM_WLS_PALETTECONFIG_PORT, auto_correct: true  # PaletteConfig
+  
   # Provision everything on the first run
   config.vm.provision "shell", path: "scripts/install.sh", env:
     {
