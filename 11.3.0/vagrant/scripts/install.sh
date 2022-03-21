@@ -21,17 +21,20 @@ echo 'INSTALLER: Started up'
 # Since we are sizing up to 8GB for running DB+WLS, we need to increase swap space
 # Normally we would do this in the OS (OEL7) but since that box is controlled by
 # another group we'll manually adjust it here.
-echo 'INSTALLER: adjusting swap'
-fallocate -l 4G /swapfile
-chown root:root /swapfile
-chmod 0600 /swapfile
-mkswap /swapfile
-swapon /swapfile
-swapon -s
-grep -i --color swap /proc/meminfo
-echo "/swapfile none            swap    sw              0       0" >> /etc/fstab
-
-echo 'INSTALLER: swap adjusted.'
+if [ -f "$/swapfile" ]; then
+    echo 'INSTALLER: extra swap file exists.'
+else 
+  echo 'INSTALLER: adjusting swap'
+  fallocate -l 4G /swapfile
+  chown root:root /swapfile
+  chmod 0600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  swapon -s
+  grep -i --color swap /proc/meminfo
+  echo "/swapfile none            swap    sw              0       0" >> /etc/fstab
+  echo 'INSTALLER: swap adjusted.'
+fi
 
 # get up to date
 yum upgrade -y
