@@ -20,11 +20,12 @@ echo 'INSTALLER: Started up 01-oipadb.sh'
 export ORACLE_PWD=${ORACLE_PWD:-"`openssl rand -base64 8`1"}
 
 # unzip oipa DB installer.
-unzip /vagrant/V997069-01.zip -d /home/oracle
+unzip -n /vagrant/V997069-01.zip -d /home/oracle
 chown oracle:oinstall -R /home/oracle
 
 # create users and import dir
 su -l oracle -c "sqlplus / as sysdba <<EOF
+   alter session set container=orclpdb1;
    create user $USER_OIPA identified by \"$ORACLE_PWD\";
    grant connect, resource to $USER_OIPA;
    grant unlimited tablespace to $USER_OIPA;   
@@ -41,10 +42,10 @@ echo "INSTALLER: $USER_IVS created with password $ORACLE_PWD";
 # TODO --> set up TDE 
 
 # import the dump files
-su -l oracle -c "impdp system/$ORACLE_PWD directory=oipa_dir dumpfile=oipa_pas.dmp logfile=/home/oracle/OIPA_PAS.log full=yes remap_schema=oipaqa:$USER_OIPA"
+su -l oracle -c "impdp system@orclpdb1/$ORACLE_PWD directory=oipa_dir dumpfile=oipa_pas.dmp logfile=/home/oracle/OIPA_PAS.log full=yes remap_schema=oipaqa:$USER_OIPA"
 echo "INSTALLER: oipa_pas.dmp imported.";
 
-su -l oracle -c "impdp system/$ORACLE_PWD directory=oipa_dir dumpfile=oipa_ivs.dmp logfile=/home/oracleOIPA_IVS.log full=yes remap_schema=oipa_ivs:$USER_IVS"
+su -l oracle -c "impdp system@orclpdb1/$ORACLE_PWD directory=oipa_dir dumpfile=oipa_ivs.dmp logfile=/home/oracleOIPA_IVS.log full=yes remap_schema=oipa_ivs:$USER_IVS"
 echo "INSTALLER: oipa_ivs.dmp imported.";
 
 # TODO --> create read only user
