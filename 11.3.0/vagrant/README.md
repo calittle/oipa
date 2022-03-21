@@ -29,8 +29,7 @@ can be easily adapted to Windows-based systems.
       - `V997074-01.zip`, OIPA_11.3.0.0_ServiceLayer_WebLogic, 65.2 MB
   3. From [OTN](https://www.oracle.com/java/technologies/javase/javase8u211-later-archive-downloads.html) Download JDK 1.8 Linux x64 RPM Package `jdk-8x311-linux-x64.rpm`.
   4. From [OTN](https://www.oracle.com/middleware/technologies/weblogic-server-downloads.html) download WebLogic Server 12.2.1.4 `fmw_12.2.1.4.0_wls_lite_Disk1_1of1.zip`. 
-  5. From [here]() download `aspectj-1.8.10.jar`.
-
+  
 4. Run `vagrant up`
    1. The first time you run this it will provision everything and may take a while. Ensure you have a good internet connection as the scripts will update the VM to the latest via `yum`.
    2. The installation can be customized, if desired (see [Configuration](#configuration)).
