@@ -13,8 +13,6 @@ can be easily adapted to Windows-based systems.
 
 1. Install [Oracle VM VirtualBox](https://www.virtualbox.org/wiki/Downloads)
 2. Install [Vagrant](https://vagrantup.com/)
-3. The [vagrant-env](https://github.com/gosuri/vagrant-env) plugin is optional but makes configuration much easier
-4. Install Vagrant Plugin SCP `$ vagrant plugin install vagrant-scp`
 
 ## Getting started
 
