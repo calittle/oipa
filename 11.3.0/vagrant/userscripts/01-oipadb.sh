@@ -11,9 +11,6 @@
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 #
 
-# Abort on any error
-set -e
-
 echo 'INSTALLER: Started up 01-oipadb.sh'
 
 # set up password for oipa/oipaivs
@@ -42,13 +39,14 @@ echo "INSTALLER: $USER_IVS created with password $ORACLE_PWD";
 # TODO --> set up TDE 
 
 # import the dump files
-su -l oracle -c "impdp system@orclpdb1/$ORACLE_PWD directory=oipa_dir dumpfile=oipa_pas.dmp logfile=/home/oracle/OIPA_PAS.log full=yes remap_schema=oipaqa:$USER_OIPA"
+su -l oracle -c "echo $ORACLE_PWD | impdp system@orclpdb1 directory=oipa_dir dumpfile=oipa_pas.dmp logfile=OIPA_PAS.log full=yes remap_schema=oipaqa:$USER_OIPA"
+ 
 echo "INSTALLER: oipa_pas.dmp imported.";
 
-su -l oracle -c "impdp system@orclpdb1/$ORACLE_PWD directory=oipa_dir dumpfile=oipa_ivs.dmp logfile=/home/oracleOIPA_IVS.log full=yes remap_schema=oipa_ivs:$USER_IVS"
+su -l oracle -c "echo $ORACLE_PWD | impdp system@orclpdb1 directory=oipa_dir dumpfile=oipa_ivs.dmp logfile=OIPA_IVS.log full=yes remap_schema=oipa_ivs:$USER_IVS"
+
 echo "INSTALLER: oipa_ivs.dmp imported.";
 
 # TODO --> create read only user
-
 
 echo "INSTALLER: 01-oipadb.sh complete.";
