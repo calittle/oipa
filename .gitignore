@@ -1,7 +1,10 @@
-!.gitignore
 RP
+install
+.vagrant
+
 .DS_Store
+
+*.rsp
 *.zip
 *.jar
 *.rpm
-install
