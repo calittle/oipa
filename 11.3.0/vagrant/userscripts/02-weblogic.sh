@@ -46,7 +46,7 @@ rpm -ivh /vagrant/jdk-$JAVA_VERSION-linux-x64.rpm
 echo 'INSTALLER: JDK installed'
 
 # Install WLS
-unzip /vagrant/fmw_$WLS_VERSION_wls_lite_Disk1_1of1.zip -d /home/oracle
+unzip -n /vagrant/fmw_$WLS_VERSION_wls_lite_Disk1_1of1.zip -d /home/oracle
 chown oracle:oinstall -R /home/oracle
 cp /vagrant/ora-response/wls.rsp.tmpl /vagrant/ora-response/wls.rsp
 sed -i -e "s|###MW_HOME###|$MW_HOME|g" /vagrant/ora-response/wls.rsp
@@ -54,7 +54,7 @@ su -l oracle -c "java -jar fmw_$WLS_VERSION_wls_lite_generic.jar -silent -respon
 echo 'INSTALLER: WebLogic installed.'
 
 # Prepare OIPA by unzipping to target directory, and downloading external files to lib.
-unzip /vagrant/V997071.zip -d $OIPA_HOME
+unzip -n /vagrant/V997071.zip -d $OIPA_HOME
 mkdir -p /vagrant/tmp
 wget -O /vagrant/tmp/aspectj-1.8.10.jar $ASPECTJ_URL
 unzip /vagrant/tmp/aspectj-1.8.10.jar -d /vagrant/tmp
@@ -71,7 +71,7 @@ cp $MW_HOME/coherence/lib/coherence.jar $OIPA_HOME/lib
 sed -i -e "s|D:/logs/oipa%u.log|$OIPA_HOME/oipa%u.log|g" $OIPA_HOME/conf/logging.properties
 
 # Prepare PaletteConfig 
-unzip /vagrant/V997078-01.zip -d /vagrant/tmp
+unzip -n /vagrant/V997078-01.zip -d /vagrant/tmp
 mkdir -p $PC_HOME/conf
 mkdir -p $PC_HOME/lib
 mkdir -p $PC_HOME/uploads
