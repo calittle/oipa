@@ -25,10 +25,10 @@ chown oracle:oinstall -R /home/oracle
 
 # create users and import dir
 su -l oracle -c "sqlplus / as sysdba <<EOF
-   create user $USER_OIPA identified by $ORACLE_PWD;
+   create user $USER_OIPA identified by \"$ORACLE_PWD\";
    grant connect, resource to $USER_OIPA;
    grant unlimited tablespace to $USER_OIPA;   
-   create user $USER_IVS identified by $ORACLE_PWD;
+   create user $USER_IVS identified by \"$ORACLE_PWD\";
    grant connect, resource to $USER_IVS;
    grant unlimited tablespace to $USER_IVS;
    create directory oipa_dir as '/home/oracle';
