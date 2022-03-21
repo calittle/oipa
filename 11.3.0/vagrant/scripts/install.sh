@@ -73,96 +73,103 @@ echo "export PATH=\$PATH:\$ORACLE_HOME/bin" >> /home/oracle/.bashrc
 echo 'INSTALLER: Environment variables set'
 
 # Install Oracle
+if [ -f "/opt/oracle/dbinstalled.txt" ]; then
+  echo "INSTALLER: Database setup skipped."
 
-unzip -n /vagrant/LINUX.X64_193000_db_home.zip -d $ORACLE_HOME/
-cp /vagrant/ora-response/db_install.rsp.tmpl /vagrant/ora-response/db_install.rsp
-sed -i -e "s|###ORACLE_BASE###|$ORACLE_BASE|g" /vagrant/ora-response/db_install.rsp
-sed -i -e "s|###ORACLE_HOME###|$ORACLE_HOME|g" /vagrant/ora-response/db_install.rsp
-sed -i -e "s|###ORACLE_EDITION###|$ORACLE_EDITION|g" /vagrant/ora-response/db_install.rsp
-chown oracle:oinstall -R $ORACLE_BASE
+else
 
-su -l oracle -c "yes | $ORACLE_HOME/runInstaller -silent -ignorePrereqFailure -waitforcompletion -responseFile /vagrant/ora-response/db_install.rsp"
-$ORACLE_BASE/oraInventory/orainstRoot.sh
-$ORACLE_HOME/root.sh
-rm /vagrant/ora-response/db_install.rsp
+  unzip -n /vagrant/LINUX.X64_193000_db_home.zip -d $ORACLE_HOME/
+  cp /vagrant/ora-response/db_install.rsp.tmpl /vagrant/ora-response/db_install.rsp
+  sed -i -e "s|###ORACLE_BASE###|$ORACLE_BASE|g" /vagrant/ora-response/db_install.rsp
+  sed -i -e "s|###ORACLE_HOME###|$ORACLE_HOME|g" /vagrant/ora-response/db_install.rsp
+  sed -i -e "s|###ORACLE_EDITION###|$ORACLE_EDITION|g" /vagrant/ora-response/db_install.rsp
+  chown oracle:oinstall -R $ORACLE_BASE
 
-echo 'INSTALLER: Oracle software installed'
+  su -l oracle -c "yes | $ORACLE_HOME/runInstaller -silent -ignorePrereqFailure -waitforcompletion -responseFile /vagrant/ora-response/db_install.rsp"
+  $ORACLE_BASE/oraInventory/orainstRoot.sh
+  $ORACLE_HOME/root.sh
+  rm /vagrant/ora-response/db_install.rsp
 
-# create sqlnet.ora, listener.ora and tnsnames.ora
-su -l oracle -c "mkdir -p $ORACLE_HOME/network/admin"
-su -l oracle -c "echo 'NAME.DIRECTORY_PATH= (TNSNAMES, EZCONNECT, HOSTNAME)' > $ORACLE_HOME/network/admin/sqlnet.ora"
+  echo 'INSTALLER: Oracle software installed'
 
-# Listener.ora
-su -l oracle -c "echo 'LISTENER = 
-(DESCRIPTION_LIST = 
-  (DESCRIPTION = 
-    (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC1)) 
-    (ADDRESS = (PROTOCOL = TCP)(HOST = 0.0.0.0)(PORT = $LISTENER_PORT)) 
+  # create sqlnet.ora, listener.ora and tnsnames.ora
+  su -l oracle -c "mkdir -p $ORACLE_HOME/network/admin"
+  su -l oracle -c "echo 'NAME.DIRECTORY_PATH= (TNSNAMES, EZCONNECT, HOSTNAME)' > $ORACLE_HOME/network/admin/sqlnet.ora"
+
+  # Listener.ora
+  su -l oracle -c "echo 'LISTENER = 
+  (DESCRIPTION_LIST = 
+    (DESCRIPTION = 
+      (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC1)) 
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 0.0.0.0)(PORT = $LISTENER_PORT)) 
+    ) 
   ) 
-) 
 
-DEDICATED_THROUGH_BROKER_LISTENER=ON
-DIAG_ADR_ENABLED = off
-' > $ORACLE_HOME/network/admin/listener.ora"
+  DEDICATED_THROUGH_BROKER_LISTENER=ON
+  DIAG_ADR_ENABLED = off
+  ' > $ORACLE_HOME/network/admin/listener.ora"
 
-su -l oracle -c "echo '$ORACLE_SID=localhost:$LISTENER_PORT/$ORACLE_SID' > $ORACLE_HOME/network/admin/tnsnames.ora"
-su -l oracle -c "echo '$ORACLE_PDB= 
-(DESCRIPTION = 
-  (ADDRESS = (PROTOCOL = TCP)(HOST = 0.0.0.0)(PORT = $LISTENER_PORT))
-  (CONNECT_DATA =
-    (SERVER = DEDICATED)
-    (SERVICE_NAME = $ORACLE_PDB)
-  )
-)' >> $ORACLE_HOME/network/admin/tnsnames.ora"
+  su -l oracle -c "echo '$ORACLE_SID=localhost:$LISTENER_PORT/$ORACLE_SID' > $ORACLE_HOME/network/admin/tnsnames.ora"
+  su -l oracle -c "echo '$ORACLE_PDB= 
+  (DESCRIPTION = 
+    (ADDRESS = (PROTOCOL = TCP)(HOST = 0.0.0.0)(PORT = $LISTENER_PORT))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = $ORACLE_PDB)
+    )
+  )' >> $ORACLE_HOME/network/admin/tnsnames.ora"
 
-# Start LISTENER
-su -l oracle -c "lsnrctl start"
+  # Start LISTENER
+  su -l oracle -c "lsnrctl start"
 
-echo 'INSTALLER: Listener created'
+  echo 'INSTALLER: Listener created'
 
-# Create database
+  # Create database
 
-# Auto generate ORACLE PWD if not passed on
-export ORACLE_PWD=${ORACLE_PWD:-"`openssl rand -base64 8`1"}
+  # Auto generate ORACLE PWD if not passed on
+  export ORACLE_PWD=${ORACLE_PWD:-"`openssl rand -base64 8`1"}
 
-cp /vagrant/ora-response/dbca.rsp.tmpl /vagrant/ora-response/dbca.rsp
-sed -i -e "s|###ORACLE_SID###|$ORACLE_SID|g" /vagrant/ora-response/dbca.rsp
-sed -i -e "s|###ORACLE_PDB###|$ORACLE_PDB|g" /vagrant/ora-response/dbca.rsp
-sed -i -e "s|###ORACLE_CHARACTERSET###|$ORACLE_CHARACTERSET|g" /vagrant/ora-response/dbca.rsp
-sed -i -e "s|###ORACLE_PWD###|$ORACLE_PWD|g" /vagrant/ora-response/dbca.rsp
-sed -i -e "s|###EM_EXPRESS_PORT###|$EM_EXPRESS_PORT|g" /vagrant/ora-response/dbca.rsp
+  cp /vagrant/ora-response/dbca.rsp.tmpl /vagrant/ora-response/dbca.rsp
+  sed -i -e "s|###ORACLE_SID###|$ORACLE_SID|g" /vagrant/ora-response/dbca.rsp
+  sed -i -e "s|###ORACLE_PDB###|$ORACLE_PDB|g" /vagrant/ora-response/dbca.rsp
+  sed -i -e "s|###ORACLE_CHARACTERSET###|$ORACLE_CHARACTERSET|g" /vagrant/ora-response/dbca.rsp
+  sed -i -e "s|###ORACLE_PWD###|$ORACLE_PWD|g" /vagrant/ora-response/dbca.rsp
+  sed -i -e "s|###EM_EXPRESS_PORT###|$EM_EXPRESS_PORT|g" /vagrant/ora-response/dbca.rsp
 
-# Create DB
-su -l oracle -c "dbca -silent -createDatabase -responseFile /vagrant/ora-response/dbca.rsp"
+  # Create DB
+  su -l oracle -c "dbca -silent -createDatabase -responseFile /vagrant/ora-response/dbca.rsp"
 
-# Post DB setup tasks
-su -l oracle -c "sqlplus / as sysdba <<EOF
-   ALTER PLUGGABLE DATABASE $ORACLE_PDB SAVE STATE;
-   EXEC DBMS_XDB_CONFIG.SETGLOBALPORTENABLED (TRUE);
-   ALTER SYSTEM SET LOCAL_LISTENER = '(ADDRESS = (PROTOCOL = TCP)(HOST = 0.0.0.0)(PORT = $LISTENER_PORT))' SCOPE=BOTH;
-   ALTER SYSTEM REGISTER;
-   exit;
-EOF"
+  # Post DB setup tasks
+  su -l oracle -c "sqlplus / as sysdba <<EOF
+     ALTER PLUGGABLE DATABASE $ORACLE_PDB SAVE STATE;
+     EXEC DBMS_XDB_CONFIG.SETGLOBALPORTENABLED (TRUE);
+     ALTER SYSTEM SET LOCAL_LISTENER = '(ADDRESS = (PROTOCOL = TCP)(HOST = 0.0.0.0)(PORT = $LISTENER_PORT))' SCOPE=BOTH;
+     ALTER SYSTEM REGISTER;
+     exit;
+  EOF"
 
-rm /vagrant/ora-response/dbca.rsp
+  rm /vagrant/ora-response/dbca.rsp
 
-echo 'INSTALLER: Database created'
+  echo 'INSTALLER: Database created'
 
-sed -i -e "\$s|${ORACLE_SID}:${ORACLE_HOME}:N|${ORACLE_SID}:${ORACLE_HOME}:Y|" /etc/oratab
-echo 'INSTALLER: Oratab configured'
+  sed -i -e "\$s|${ORACLE_SID}:${ORACLE_HOME}:N|${ORACLE_SID}:${ORACLE_HOME}:Y|" /etc/oratab
+  echo 'INSTALLER: Oratab configured'
 
-# configure systemd to start oracle instance on startup
-sudo cp /vagrant/scripts/oracle-rdbms.service /etc/systemd/system/
-sudo sed -i -e "s|###ORACLE_HOME###|$ORACLE_HOME|g" /etc/systemd/system/oracle-rdbms.service
-sudo systemctl daemon-reload
-sudo systemctl enable oracle-rdbms
-sudo systemctl start oracle-rdbms
-echo "INSTALLER: Created and enabled oracle-rdbms systemd's service"
+  # configure systemd to start oracle instance on startup
+  sudo cp /vagrant/scripts/oracle-rdbms.service /etc/systemd/system/
+  sudo sed -i -e "s|###ORACLE_HOME###|$ORACLE_HOME|g" /etc/systemd/system/oracle-rdbms.service
+  sudo systemctl daemon-reload
+  sudo systemctl enable oracle-rdbms
+  sudo systemctl start oracle-rdbms
+  echo "INSTALLER: Created and enabled oracle-rdbms systemd's service"
 
-sudo cp /vagrant/scripts/setPassword.sh /home/oracle/
-sudo chmod a+rx /home/oracle/setPassword.sh
+  sudo cp /vagrant/scripts/setPassword.sh /home/oracle/
+  sudo chmod a+rx /home/oracle/setPassword.sh
 
-echo "INSTALLER: setPassword.sh file setup";
+  echo "INSTALLER: setPassword.sh file setup";
+  echo "ORACLE PASSWORD FOR SYS, SYSTEM AND PDBADMIN: $ORACLE_PWD";
+  su -l oracle -c "echo 'delete this file to reinstall'>>/opt/oracle/dbinstalled.txt"
+fi 
 
 # run user-defined post-setup scripts
 echo 'INSTALLER: Running user-defined post-setup scripts'
@@ -191,6 +198,5 @@ for f in /vagrant/userscripts/*
 
 echo 'INSTALLER: Done running user-defined post-setup scripts'
 
-echo "ORACLE PASSWORD FOR SYS, SYSTEM AND PDBADMIN: $ORACLE_PWD";
 
 echo "INSTALLER: Installation complete, database ready to use!";
