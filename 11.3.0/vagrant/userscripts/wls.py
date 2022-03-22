@@ -12,7 +12,6 @@
 
 
 def createJDBCDatasource(  jdbcName, jdbcJNDIName, dbUser, dbPassword, dbHost, dbPort, dbName, dbNameType, targetName ) :
-	readDomain( dirDomain ); 
 	print( '  ' + jdbcName );	
 	cd( '/' );	
 	create( jdbcName , 'JDBCSystemResource' );	
@@ -55,8 +54,7 @@ def createJDBCDatasource(  jdbcName, jdbcJNDIName, dbUser, dbPassword, dbHost, d
 	cd( '/JDBCSystemResources/' +  jdbcName  );
 	set( 'Target', targetName );
 	
-	updateDomain();
-
+	
 def createJMSServer( serverName, defaultPort, sslPort ) :
 	print 'INFO: Creating Managed Server=<' + serverName + '>, ports: ' + defaultPort + ', ' + sslPort;
 	jvmArgs = None;
@@ -186,56 +184,73 @@ jrfTemplate = dirWeblogicHome + '/' + dirCommon + '/common/templates/wls/oracle.
 emTemplate = dirWeblogicHome + '/' + dirEM + '/common/templates/wls/oracle.em_wls_template.jar' ;
 createDomain( wlsTemplate, dirDomain, weblogicUsername, weblogicPassword );
 readDomain( dirDomain ); 
-addTemplate( jrfTemplate ); 
-addTemplate( emTemplate ); 
+# addTemplate( jrfTemplate ); 
+# addTemplate( emTemplate ); 
 updateDomain();
 
-cd('/');
+nameOipaServer = str(nameOipaServer);
+portOipaServer = int(portOipaServer);
+portSslOipaServer = int(portSslOipaServer)
+
+namePCServer = str(namePCServer);
+portPCServer = int(portPCServer);
+portSslPCServer = int(portSslPCServer);
+
+print 'Creating ' + nameOipaServer;
+cd( '/' );
 create( nameOipaServer, 'Server');
-cd('/Servers/' + nameOipaServer );
+cd( '/Servers/' + nameOipaServer );
 set( 'ListenPort', portOipaServer );
-cd('/Server/'+nameOipaServer+'/ServerStart/NO_NAME_0');
-set('Arguments',jvmArgsOipaServer );
-set('ClassPath',jvmClassPathOipaServer );
 create( nameOipaServer, 'SSL');
-cd('/Servers/' + nameOipaServer + '/SSL/' + nameOipaServer );
+cd( '/Servers/' + nameOipaServer + '/SSL/' + nameOipaServer );
 set( 'ListenPort', portSslOipaServer );
 set( 'Enabled', 'True');
+cd( '/Servers/' + nameOipaServer );
+create( nameOipaServer,'ServerStart');
+cd( '/Server/' + nameOipaServer +'/ServerStart/NO_NAME_0');
+set( 'Arguments' , jvmArgsOipaServer );
+set( 'ClassPath' , jvmClassPathOipaServer );
 
+print 'Creating ' + namePCServer;
 cd('/');
 create( namePCServer, 'Server');
-cd('/Servers/' + namePCServer );
+cd( '/Servers/' + namePCServer );
 set( 'ListenPort', portPCServer );
-cd('/Server/'+namePCServer+'/ServerStart/NO_NAME_0');
-set('Arguments',jvmArgsPCServer );
-set('ClassPath',jvmClassPathPCServer );
 create( namePCServer, 'SSL');
-cd('/Servers/' + namePCServer + '/SSL/' + namePCServer );
+cd( '/Servers/' + namePCServer + '/SSL/' + namePCServer );
 set( 'ListenPort', portSslPCServer );
 set( 'Enabled', 'True');
+cd( '/Servers/' + namePCServer );
+create( namePCServer,'ServerStart');
+cd( '/Server/'+namePCServer+'/ServerStart/NO_NAME_0');
+set( 'Arguments',jvmArgsPCServer );
+set( 'ClassPath',jvmClassPathPCServer );
 
-cd('/')
-create(nameMachine,'UnixMachine')
-assign('Server', 'oipa_server','paletteconfig_server','Machine',nameMachine)
-cd('/UnixMachine/' + nameMachine)
-create(nameMachine, 'NodeManager')
-cd('NodeManager/' + nameMachine)
-set('NMType','SSL')
-set('ListenAddress', 'localhost')
-set('ListenPort', 5556)
-set('DebugEnabled','false')
+print 'Creating ' + nameMachine;
+cd('/');
+create( str(nameMachine),'UnixMachine');
+assign('Server', 'oipa_server,paletteconfig_server','Machine', nameMachine);
+cd( '/UnixMachine/' + nameMachine);
+create( str(nameMachine), 'NodeManager');
+cd( 'NodeManager/' + nameMachine);
+set( 'NMType','SSL');
+set( 'ListenAddress', 'localhost');
+set( 'ListenPort', 5556);
+set( 'DebugEnabled','false');
 
-updateDomain()
+updateDomain();
 
-createJDBCDatasource( 'ADMINSERVERDS_0', 'jdbc/ADMINSERVERDS',  jdbcOipaUser, jdbcOipaPwd, 'localhost', '1521', 'orclpdb1','ServiceName', nameOipaServer );
-createJDBCDatasource( 'ADMINSERVERRESOURCEDS_0', 'jdbc/ADMINSERVERRESOURCEDS',  jdbcOipaUser, jdbcOipaPwd, 'localhost', '1521', 'orclpdb1','ServiceName', nameOipaServer );
-createJDBCDatasource( 'ADMINSERVERSEARCHDS_0', 'jdbc/ADMINSERVERSEARCHDS',  jdbcOipaUser, jdbcOipaPwd, 'localhost', '1521', 'orclpdb1','ServiceName', nameOipaServer );
-createJDBCDatasource( 'ADMINSERVERREADONLYDS_0', 'jdbc/ADMINSERVERREADONLYDS',  jdbcOipaUser, jdbcOipaPwd, 'localhost', '1521', 'orclpdb1','ServiceName', nameOipaServer );
-createJDBCDatasource( 'PALETTECONFIGDS_0', 'jdbc/PALETTECONFIGDS',  jdbcOipaUser, jdbcOipaPwd, 'localhost', '1521', 'orclpdb1','ServiceName', namePCServer );
-createJDBCDatasource( 'PALETTECONFIGIVSDS_0', 'jdbc/PALETTECONFIGIVSDS',  jdbcIvsUser, jdbcIvsPwd, 'localhost', '1521', 'orclpdb1','ServiceName', namePCServer);
+createJDBCDatasource( 'ADMINSERVERDS_0', 'jdbc/ADMINSERVERDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort,jdbcDatabaseName, jdbcDatabaseNameType, nameOipaServer );
+createJDBCDatasource( 'ADMINSERVERRESOURCEDS_0', 'jdbc/ADMINSERVERRESOURCEDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, nameOipaServer );
+createJDBCDatasource( 'ADMINSERVERSEARCHDS_0', 'jdbc/ADMINSERVERSEARCHDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, nameOipaServer );
+createJDBCDatasource( 'ADMINSERVERREADONLYDS_0', 'jdbc/ADMINSERVERREADONLYDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, nameOipaServer );
+createJDBCDatasource( 'PALETTECONFIGDS_0', 'jdbc/PALETTECONFIGDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, namePCServer );
+createJDBCDatasource( 'PALETTECONFIGIVSDS_0', 'jdbc/PALETTECONFIGIVSDS',  jdbcIvsUser, jdbcIvsPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, namePCServer);
+
 # #create_cluster_offline(getDomainDir(),None, namejmsCluster, None);
 # createJMSServer( nameJmsServer, portJmsServer, portJmsSslServer );
 # createDocumakerJMSResources( nameJmsServer );
+
 cd( '/' );
 create( nameOipaApp, 'AppDeployment' );
 cd( '/AppDeployment/' + nameOipaApp );

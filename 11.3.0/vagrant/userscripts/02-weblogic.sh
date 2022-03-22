@@ -14,7 +14,7 @@
 # Abort on any error
 set -e
 if [ -f "/opt/oracle/weblogic.txt" ]; then
-	 echo "INSTALLER: WebLogic skipped. Delete /opt/oracle/weblogic.txt to reprovision."
+	 echo "INSTALLER: WebLogic skipped. Delete /opt/oracle/weblogic.txt to attempt reprovision steps."
 
 else
 
@@ -23,7 +23,7 @@ else
 
 	# Setup password if not already provided.
 	export WLS_PWD=${WLS_PWD:-"`openssl rand -base64 8`1"}
-	echo "PASSWORD FOR WebLogic : $WLS_PWD";
+	echo "INSTALLER: PASSWORD FOR WebLogic : $WLS_PWD";
 
 	export OIPA_HOME=$ORACLE_BASE/applications/oipa
 	export PC_HOME=$ORACLE_BASE/applications/paletteconfig
@@ -118,30 +118,37 @@ else
 
 		# Create WLS domain
 		cp /vagrant/ora-response/wls.properties.tmpl /vagrant/userscripts/wls.properties
-		sed -i -e "s|###ADMINPORT###|$WLS_ADMINPORT|g" /vagrant/userscripts/wls.properties
-		sed -i -e "s|###OIPAPORT###|$WLS_OIPAPORT|g" /vagrant/userscripts/wls.properties
-		sed -i -e "s|###PCPORT###|$WLS_PALETTECONFIGPORT|g" /vagrant/userscripts/wls.properties
-		sed -i -e "s|###OIPASSLPORT###|$WLS_SSLOIPAPORT|g" /vagrant/userscripts/wls.properties
-		sed -i -e "s|###PCPSSLORT###|$WLS_SSLPALETTECONFIGPORT|g" /vagrant/userscripts/wls.properties
-		sed -i -e "s|###MW_DOMAIN###|$MW_DOMAIN|g" /vagrant/userscripts/wls.properties
-		sed -i -e "s|###WLS_PWD###|$WLS_PWD|g" /vagrant/userscripts/wls.properties
-		sed -i -e "s|###ORACLE_PDB###|$ORACLE_PDB|g" /vagrant/userscripts/wls.properties
-		sed -i -e "s|###LISTENER_PORT###|$LISTENER_PORT|g" /vagrant/userscripts/wls.properties
-
 		sed -i -e "s|###OIPA_HOME###|$OIPA_HOME|g" /vagrant/userscripts/wls.properties
 		sed -i -e "s|###PC_HOME###|$PC_HOME|g" /vagrant/userscripts/wls.properties
 
+		sed -i -e "s|###ADMINPORT###|$WLS_ADMINPORT|g" /vagrant/userscripts/wls.properties
+		sed -i -e "s|###OIPAPORT###|$WLS_OIPAPORT|g" /vagrant/userscripts/wls.properties
+		sed -i -e "s|###PCPORT###|$WLS_PALETTECONFIGPORT|g" /vagrant/userscripts/wls.properties
+		
+		sed -i -e "s|###OIPASSLPORT###|$WLS_SSLOIPAPORT|g" /vagrant/userscripts/wls.properties
+		sed -i -e "s|###PCSSLPORT###|$WLS_SSLPALETTECONFIGPORT|g" /vagrant/userscripts/wls.properties
+
+		sed -i -e "s|###MW_DOMAIN###|$MW_DOMAIN|g" /vagrant/userscripts/wls.properties
+		sed -i -e "s|###ORACLE_BASE###|$ORACLE_BASE|g" /vagrant/userscripts/wls.properties
+		sed -i -e "s|###MW_HOME###|$MW_HOME|g" /vagrant/userscripts/wls.properties
+		sed -i -e "s|###WLS_PWD###|$WLS_PWD|g" /vagrant/userscripts/wls.properties
+		
+		sed -i -e "s|###ORACLE_PDB###|$ORACLE_PDB|g" /vagrant/userscripts/wls.properties
+		sed -i -e "s|###LISTENER_PORT###|$LISTENER_PORT|g" /vagrant/userscripts/wls.properties		
 		sed -i -e "s|###DB_OIPA_USER###|$USER_OIPA|g" /vagrant/userscripts/wls.properties
 		sed -i -e "s|###DB_OIPA_PWD###|$ORACLE_PWD|g" /vagrant/userscripts/wls.properties
 		sed -i -e "s|###DB_IVS_USER###|$USER_IVS|g" /vagrant/userscripts/wls.properties
 		sed -i -e "s|###DB_IVS_PWD###|$ORACLE_PWD|g" /vagrant/userscripts/wls.properties     
 
-		export PATH=$MW_HOME/wlserver/common/bin:$PATH
 
-		wlst.sh wls.py
-
+		if [ -d "$ORACLE_BASE/domains/$MW_DOMAIN" ]; then
+			echo "INSTALLER: removing existing WebLogic domain at $ORACLE_BASE/domains/$MW_DOMAIN"
+			rm -rf "$ORACLE_BASE/domains/$MW_DOMAIN"
+		fi
+		su -l oracle -c "cd /vagrant/userscripts && $MW_HOME/oracle_common/common/bin/wlst.sh wls.py"		
+		
 		echo 'INSTALLER: WebLogic domain created.'
-		su -l oracle -c "echo 'delete this file to rerun WebLogic OIPA domain creation. You may need to delete the $MW_DOMAIN directory.'>>/opt/oracle/weblogic-step3.txt"
+		su -l oracle -c "echo 'delete this file to rerun WebLogic OIPA domain creation. '>>/opt/oracle/weblogic-step3.txt"
 	fi
 	if [ -f "/opt/oracle/weblogic-step4.txt" ]; then
 		 echo "INSTALLER: WebLogic service registration skipped. Delete /opt/oracle/weblogic-step4.txt to reprovision."
@@ -149,11 +156,11 @@ else
 
 		# Install WLS Services
 		cp /vagrant/ora-response/wls_nm.service.tmpl /etc/systemd/system/wls_nm.service
-		sed -i -e "s|###ORACLE_HOME###|$ORACLE_HOME|g" /etc/systemd/system/wls_nm.service
+		sed -i -e "s|###ORACLE_BASE###|$ORACLE_BASE|g" /etc/systemd/system/wls_nm.service
 		sed -i -e "s|###MW_DOMAIN###|$MW_DOMAIN|g" /etc/systemd/system/wls_nm.service
 
 		cp /vagrant/ora-response/wls_admin.service.tmpl /etc/systemd/system/wls_admin.service
-		sed -i -e "s|###ORACLE_HOME###|$ORACLE_HOME|g" /etc/systemd/system/wls_admin.service
+		sed -i -e "s|###ORACLE_BASE###|$ORACLE_BASE|g" /etc/systemd/system/wls_admin.service
 		sed -i -e "s|###MW_DOMAIN###|$MW_DOMAIN|g" /etc/systemd/system/wls_admin.service
 
 		sudo systemctl daemon-reload
@@ -162,10 +169,27 @@ else
 		sudo systemctl start wls_nm
 		sudo systemctl start wls_admin
 		
-		rm /vagrant/userscripts/wls.properties
+		echo 'INSTALLER: WebLogic services started. '
+		echo '	To check status of services :'
+		echo '		$ sudo systemctl status wls_nm';
+		echo '		$ sudo systemctl status wls_admin';
+		echo '	To check stop/start services :'
+		echo '		$ sudo systemctl stop wls_nm';
+		echo '		$ sudo systemctl start wls_admin';
+		echo "	To access the WebLogic adminstration console, browse to http://localhost:7001/console on your host machine and login with weblogic/$WLS_PWD";
 
-		echo 'INSTALLER: WebLogic services started.'
-		echo "PASSWORD FOR WEBLOGIC: $WLS_PWD";
-		su -l oracle -c "echo 'delete this file to reinstall WebLogic. Note you may need to manually remove everything that was created to redo this step!'>>/opt/oracle/weblogic.txt"
-	fi
+		su -l oracle -c "echo 'delete this file to reinstall WebLogic services.'>>/opt/oracle/weblogic-step4.txt"
+	fi	
+	# if [ -f "/opt/oracle/weblogic-step5.txt" ]; then
+	# 	echo "INSTALLER: WebLogic server start skipped. Delete /opt/oracle/weblogic-step5.txt to rerun this step."
+	# else		
+	# 	su -l oracle -c "cd /vagrant/userscripts && $MW_HOME/oracle_common/common/bin/wlst.sh nm.py"
+	# 	echo 'INSTALLER: Managed servers started.'
+	# 	echo '!!!!!!!! FOR SECURITY PURPOSES YOU SHOULD REMOVE THE /vagrant/userscripts/wls.properties FILE AS THIS CONTAINS PASSWORDS !!!!!!'
+	# 	echo 'Note that you will have to recreate this file to reprovision, or remove weblogic-step3.txt and weblogic.txt to get it recreated.'
+	# 	su -l oracle -c "echo 'delete this file to start WebLogic servers; or just use WebLogic console.'>>/opt/oracle/weblogic-step5.txt"
+	# fi
+	
+	[ -f "/vagrant/userscripts/wls.properties" ] && rm /vagrant/userscripts/wls.properties	
+	su -l oracle -c "echo 'delete this file to reinstall WebLogic. Note you may need to manually remove everything that was created to redo this step!'>>/opt/oracle/weblogic.txt"
 fi 
