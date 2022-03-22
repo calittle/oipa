@@ -25,14 +25,15 @@ can be easily adapted to Windows-based systems.
       - `V997069-01.zip`, OIPA_11.3.0.0_Database_Oracle, 49.2 MB
       - `V997071-01.zip`, OIPA_11.3.0.0_PASJava_WebLogic, 217.8 MB
       - `V997074-01.zip`, OIPA_11.3.0.0_ServiceLayer_WebLogic, 65.2 MB
-  3. From [OTN](https://www.oracle.com/java/technologies/javase/javase8u211-later-archive-downloads.html) Download JDK 1.8 Linux x64 RPM Package `jdk-8x311-linux-x64.rpm`.
+  3. From [OTN](https://www.oracle.com/java/technologies/javase/javase8u211-later-archive-downloads.html) Download JDK 1.8 Linux x64 RPM Package `jdk-8u311-linux-x64.rpm`.
   4. From [OTN](https://www.oracle.com/middleware/technologies/weblogic-server-downloads.html) download WebLogic Server 12.2.1.4 `fmw_12.2.1.4.0_wls_lite_Disk1_1of1.zip`. 
   
 4. Run `vagrant up`
    1. The first time you run this it will provision everything and may take a while. Ensure you have a good internet connection as the scripts will update the VM to the latest via `yum`.
    2. The installation can be customized, if desired (see [Configuration](#configuration)).
 5. Connect to the database (see [Connecting to Oracle](#connecting-to-oracle))
-6. You can shut down the VM via the usual `vagrant halt` and then start it up again via `vagrant up`
+6. You can shut down the VM via the usual `vagrant halt` and then start it up again via `vagrant up`. You can also [reprovision[(#reprovision)]].
+
 
 ## Connecting to Oracle
 
@@ -59,6 +60,27 @@ Shell scripts will be executed as root. SQL scripts will be executed as SYS. SQL
 
 To run scripts in a specific order, prefix the file names with a number, e.g., `01_shellscript.sh`, `02_tablespaces.sql`, `03_shellscript2.sh`, etc.
 
+## Reprovision
+
+Sometimes it may be necessary to reprovision the VM if something did not deploy correctly, or simply just to start over. To reprovision, make sure your VM is in a halted stated (e.g. `vagrant halt`) and then run `vagrant up --provision`). Before you do that, make sure you have corrected the elements of the deployment that failed. In order to provide more granular control over what steps are rerun, the deployment scripts create some simple txt files at various points of the deployment process. Delete these files to rerun that step. Note that there isn't a rollback, so sometimes you might need to undo what the deployment step did. This isn't foolproof, so use your best judgment (e.g. if you're not sure, just `vagrant destroy oipa-vagrant` and then `vagrant up` to redo the whole thing.) 
+
+- `/opt/oracle/dbinstalled.txt` - delete this file to redo the entire unpacking and installation of the database software, and listener configuration, CDB/PDB deployment, and database services.
+- `/opt/oracle/db-step1.txt` - delete this file to redo the database sfotware unpack and install.
+- `/opt/oracle/db-step2.txt` - delete this file to redo the listener configuration.
+- `/opt/oracle/db-step3.txt` - delete this file to redo the CDB/PDB creation.
+- `/opt/oracle/db-step4.txt` - delete this file to redo the database service registration with the OS.
+
+- `/opt/oracle/oipadb.txt` - delete this file to redo the the OIPA database import and oipa/ivs user creation.
+- `/opt/oracle/oipadb-step1.txt` - delete this file to redo oipa/ivs user creation. You may need to drop the users before reprovision.
+- `/opt/oracle/oipadb-step2.txt` - delete this file to redo oipa db import. You must adjust impdp settings in `userscripts/01-oipadb.sh` for this to work correctly. Advise dropping user schemas with cascade and start over.
+- `/opt/oracle/oipadb-step3.txt` - delete this file to redo ivs db import. You must adjust impdp settings in `userscripts/01-oipadb.sh` for this to work correctly. Advise dropping user schemas with cascade and start over.
+
+- `/opt/oracle/weblogic.txt` - delete this file to redo WebLogic install and domain creation.
+- `/opt/oracle/weblogic-step1.txt` - delete this file to reinstall WebLogic server.
+- `/opt/oracle/weblogic-step2.txt` - delete this file to redo the prerequisite download and preparation for domain deployment.
+- `/opt/oracle/weblogic-step3.txt` - delete this file to recreate the WebLogic domain and application deployment. You may need to delete a directory to do this correctly.
+- `/opt/oracle/weblogic-step4.txt` - delete to reprovision WebLogic services.
+
 ## Configuration
 
 The `Vagrantfile` can be used _as-is_, without any additional configuration. However, there are several parameters you can set to tailor the installation to your needs.
@@ -81,8 +103,8 @@ Parameters are considered in the following order (first one wins):
 
 ### VM parameters
 
-* `VM_NAME` (default: `oracle-19c-vagrant`): VM name.
-* `VM_MEMORY` (default: `2300`): memory for the VM (in MB, 2300 MB is ~2.25 GB).
+* `VM_NAME` (default: `oipa-vagrant`): VM name.
+* `VM_MEMORY` (default: `8192`): memory for the VM (in MB).
 * `VM_SYSTEM_TIMEZONE` (default: host time zone (if possible)): VM time zone.
   * The system time zone is used by the database for SYSDATE/SYSTIMESTAMP.
   * The guest time zone will be set to the host time zone when the host time zone is a full hour offset from GMT.
@@ -100,6 +122,25 @@ Parameters are considered in the following order (first one wins):
 * `VM_LISTENER_PORT` (default: `1521`): Listener port.
 * `VM_EM_EXPRESS_PORT` (default: `5500`): EM Express port.
 * `VM_ORACLE_PWD` (default: automatically generated): Oracle Database password for the SYS, SYSTEM and PDBADMIN accounts.
+
+### Oracle WebLogic Server parameters
+
+* `VM_VM_MW_HOME` (default: `/opt/oracle/middleware`): base directory for WebLogic.
+* `VM_MW_DOMAIN` (default: `oipa`): WebLogic domain name
+* `VM_WLS_PORT_ADMIN` (default: `7001`): WebLogic administrative port
+* `VM_WLS_OIPA_PORT` (default: `10001`): OIPA PASJava server port
+* `VM_WLS_OIPA_SSLPORT` (default: `10002`): OIPA PASJava server SSL port
+* `VM_WLS_PALETTECONFIG_PORT` (default: `11001`): OIPA Palette Config server port
+* `VM_WLS_PALETTECONFIG_SSLPORT` (default: `11002`): OIPA Palette Config serfver SSL port
+* `VM_JDK` (default: `8u311`): Java version used (must align with download package obtained from [Getting Started](#Getting-Started))
+* `VM_JAVA_PATH` (default: `/usr/java/jdk1.8.0_311-amd64`): Java installation path on VM
+* `VM_WLS` (default: `12.2.1.4.0`): WebLogic server version used (must align with download package obtained from [Getting Started](#Getting-Started))
+
+### OIPA parameters
+* `VM_DB_USER_OIPA` (default: `oipa`): The db user that owns OIPA tables. Password is set to `VM_ORACLE_PWD`.
+* `VM_DB_USER_IVS` (default: `oipaivs`): The db user that owns IVS tables. Password is set to `VM_ORACLE_PWD`.
+* `VM_OIPA_URL_ASPECTJ` (default: `https://www.eclipse.org/downloads/download.php?file=/tools/aspectj/aspectj-1.8.10.jar&mirror_id=1135`): The URL to download AspectJ (OIPA prerequisite component). Download is automated.
+* `VM_OIPA_URL_LOG4J` (default: `https://archive.apache.org/dist/logging/log4j/1.2.17/log4j-1.2.17.jar`): The URL to download Log4J (OIPA prerequisite component). Download is automated.
 
 ## Optional plugins
 
