@@ -30,12 +30,15 @@ can be easily adapted to Windows-based systems.
   
 4. Run `vagrant up`
    1. The first time you run this it will provision everything and may take a while. Ensure you have a good internet connection as the scripts will update the VM to the latest via `yum`.
-   2. The installation can be customized, if desired (see [Configuration](#configuration)).
-5. Connect to the database (see [Connecting to Oracle](#connecting-to-oracle))
+   2. The main script is in `scripts\install.sh` - this takes care of installing and deploying the database.
+   3. Subsequent script files in `userscripts` are executed:
+      1. `01-oipadb1.sh` unpacks and imports the OIPA database artifacts.
+      2. `02-weblogic.sh` creates the WebLogic domain and deploys the applications using the `wls.py` script.
+   5. The installation can be customized, if desired (see [Configuration](#configuration)).
+5. Connect to the database (see [Connecting to Oracle](#connecting-to-oracle-database))
 6. You can shut down the VM via the usual `vagrant halt` and then start it up again via `vagrant up`. You can also [reprovision[(#reprovision)]].
 
-
-## Connecting to Oracle
+## Connecting to Oracle Database
 
 The default database connection parameters are:
 
@@ -48,7 +51,23 @@ The default database connection parameters are:
 
 These parameters can be customized, if desired (see [Configuration](#configuration)).
 
-## Resetting password
+## Connecting to WebLogic servers
+
+Ports are automatically forwarded from your host machine, so you can access the apps from your browser:
+* WebLogic Console [http://localhost:7001/console](http://localhost:7001/console)
+* OIPA PAS [http://localhost:10001/PASJava](http://localhost:10001/PASJava)
+* OIPA Palette Config [http://localhost:10001/PASJava](http://localhost:11001/PaletteConfig)
+
+## Services
+Before accessing servers, ensure the appropriate services are started by running the following commands:
+```
+vagrant ssh
+sudo systemctl start wls_nm
+sudo systemctl start wls_admin
+```
+Then use the WebLogic console to start the managed servers
+
+## Resetting Database password
 
 You can reset the password of the Oracle database accounts (SYS, SYSTEM and PDBADMIN only) by switching to the oracle user (`sudo su - oracle`), then executing `/home/oracle/setPassword.sh <Your new password>`.
 
