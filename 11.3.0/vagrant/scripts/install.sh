@@ -199,7 +199,7 @@ for f in /vagrant/userscripts/*
 				:
 				;;
 			*)
-				echo "INSTALLER: Ignoring $f"
+				#echo "INSTALLER: Ignoring $f"
 				;;
 		esac
 	done
@@ -207,4 +207,4 @@ for f in /vagrant/userscripts/*
 echo 'INSTALLER: Done running user-defined post-setup scripts'
 
 
-echo "INSTALLER: Installation complete, database ready to use!";
+echo "INSTALLER: Installation complete, OIPA system ready to use!";
