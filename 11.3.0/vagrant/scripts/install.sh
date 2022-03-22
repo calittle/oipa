@@ -98,13 +98,10 @@ else
 
   # Listener.ora
   su -l oracle -c "echo 'LISTENER = 
-  (DESCRIPTION_LIST = 
     (DESCRIPTION = 
       (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC1)) 
       (ADDRESS = (PROTOCOL = TCP)(HOST = 0.0.0.0)(PORT = $LISTENER_PORT)) 
-    ) 
   ) 
-
   DEDICATED_THROUGH_BROKER_LISTENER=ON
   DIAG_ADR_ENABLED = off
   ' > $ORACLE_HOME/network/admin/listener.ora"
