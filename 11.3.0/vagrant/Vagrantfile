@@ -58,11 +58,21 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   VM_LISTENER_PORT = default_i('VM_LISTENER_PORT', 1521)
   VM_EM_EXPRESS_PORT = default_i('VM_EM_EXPRESS_PORT', 5500)
 
+############################################################################
+
   # Oracle Database password for SYS, SYSTEM and PDBADMIN accounts
   # If left blank, the password will be generated automatically
-  ## NOTE: If you need to reprovision, and you have already established the 
-  ## database password, you need to fill it in here!
+  # NOTE: If you need to reprovision, and you have already established the 
+  # database password, you need to fill it in here!
   VM_ORACLE_PWD = default_s('VM_ORACLE_PWD', '')
+
+  # WebLogic password for administrative user
+  # If left blank, the password will be generated automatically
+  # NOTE: If you need to reprovision, and you have already established the 
+  # password, you need to fill it in here!
+  VM_WLS_PWD = default_s('VM_WLS_PWD','')
+
+############################################################################
 
   VM_MW_HOME = default_s('VM_MW_HOME','/opt/oracle/middleware')
   VM_MW_DOMAIN = default_s('VM_MW_DOMAIN','oipa')
@@ -190,11 +200,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
        "LISTENER_PORT"       => VM_LISTENER_PORT,
        "EM_EXPRESS_PORT"     => VM_EM_EXPRESS_PORT,
        "ORACLE_PWD"          => VM_ORACLE_PWD,
-       "MW_HOME" => VM_MW_HOME,
-       "WLS_ADMINPORT" => VM_WLS_PORT_ADMIN,
-       "WLS_OIPAPORT" => VM_WLS_OIPA_PORT,
-       "WLS_PALETTECONFIGPORT" => VM_WLS_PALETTECONFIG_PORT,       
-       "WLS_SSLOIPAPORT" => VM_WLS_OIPA_SSLPORT,
+       "WLS_PWD"             => VM_WLS_PWD,
+       "MW_HOME"             => VM_MW_HOME,
+       "WLS_ADMINPORT"        => VM_WLS_PORT_ADMIN,
+       "WLS_OIPAPORT"             => VM_WLS_OIPA_PORT,
+       "WLS_PALETTECONFIGPORT"    => VM_WLS_PALETTECONFIG_PORT,       
+       "WLS_SSLOIPAPORT"          => VM_WLS_OIPA_SSLPORT,
        "WLS_SSLPALETTECONFIGPORT" => VM_WLS_PALETTECONFIG_SSLPORT,              
        "WLS_VERSION" => VM_WLS,
        "JAVA_VERSION" => VM_JDK,
