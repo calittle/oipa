@@ -8,3 +8,4 @@ install
 *.zip
 *.jar
 *.rpm
+*.properties

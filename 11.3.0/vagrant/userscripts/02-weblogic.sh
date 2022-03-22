@@ -85,9 +85,9 @@ else
 		# Prepare OIPA by unzipping to target directory, and downloading external files to lib.
 		unzip -n "/vagrant/${OIPAWLSZIP}" -d $OIPA_HOME
 		mkdir -p /vagrant/tmp
-		echo "INSTALLER: running wget -O /vagrant/tmp/aspectj-1.8.10.jar \"$ASPECTJ_URL\""
-		wget -O /vagrant/tmp/aspectj-1.8.10.jar "$ASPECTJ_URL" && unzip /vagrant/tmp/aspectj-1.8.10.jar -d /vagrant/tmp		
-		wget -O $OIPA_HOME/lib/log4j-1.2.17.jar "$LOG4J_URL"
+		wget -q -O /vagrant/tmp/aspectj-1.8.10.jar "$ASPECTJ_URL" 
+		unzip /vagrant/tmp/aspectj-1.8.10.jar -d /vagrant/tmp		
+		wget -q -O $OIPA_HOME/lib/log4j-1.2.17.jar "$LOG4J_URL"
 		mv /vagrant/tmp/lib/aspectjweaver.jar $OIPA_HOME/lib
 		mv /vagrant/tmp/lib/aspectjrt.jar $OIPA_HOME/lib		
 		cp $MW_HOME/oracle_common/modules/oracle.osdt/osdt_core.jar $OIPA_HOME/lib

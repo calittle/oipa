@@ -137,9 +137,11 @@ Parameters are considered in the following order (first one wins):
 * `VM_WLS` (default: `12.2.1.4.0`): WebLogic server version used (must align with download package obtained from [Getting Started](#Getting-Started))
 
 ### OIPA parameters
+* `VM_ZIP_OIPA_DB` (default: `V997069-01.zip`): The zip package containing the OIPA DB installation.
+
 * `VM_DB_USER_OIPA` (default: `oipa`): The db user that owns OIPA tables. Password is set to `VM_ORACLE_PWD`.
 * `VM_DB_USER_IVS` (default: `oipaivs`): The db user that owns IVS tables. Password is set to `VM_ORACLE_PWD`.
-* `VM_OIPA_URL_ASPECTJ` (default: `https://www.eclipse.org/downloads/download.php?file=/tools/aspectj/aspectj-1.8.10.jar&mirror_id=1135`): The URL to download AspectJ (OIPA prerequisite component). Download is automated.
+* `VM_OIPA_URL_ASPECTJ` (default: `https://eclipse.mirror.rafal.ca/tools/aspectj/aspectj-1.8.10.jar`): The *direct download URL* to download AspectJ (OIPA prerequisite component). Download is automated. To find a different mirror and upload the link, search here: https://www.eclipse.org/downloads/download.php?file=/tools/aspectj/aspectj-1.8.10.jar
 * `VM_OIPA_URL_LOG4J` (default: `https://archive.apache.org/dist/logging/log4j/1.2.17/log4j-1.2.17.jar`): The URL to download Log4J (OIPA prerequisite component). Download is automated.
 
 ## Optional plugins
