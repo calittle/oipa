@@ -40,16 +40,20 @@ else
 	echo 'INSTALLER: OIPA directories created'
 
 	# set environment variables
-	echo "export PATH=\$PATH:\$ORACLE_HOME/bin" >> /home/oracle/.bashrc
-	echo "export MW_HOME=$MW_HOME" >> /home/oracle/.bashrc
-	echo "export WLS_HOME=$MW_HOME/wlserver" >> /home/oracle/.bashrc
-	echo "export WL_HOME=$WLS_HOME" >> /home/oracle/.bashrc
-	echo "export JAVA_HOME=$JAVA_PATH" >> /home/oracle/.bashrc
-	echo "export JAVA_HOME=$JAVA_PATH" >> /root/.bashrc
-	echo "export PATH=$JAVA_HOME/bin:\$PATH" >> /home/oracle/.bashrc
-	echo "export OIPA_HOME=$OIPA_HOME" >> /home/oracle/.bashrc
-	echo "export PC_HOME=$PC_HOME" >> /home/oracle/.bashrc
-	echo 'INSTALLER: Environment variables set'
+	if grep -q PC_HOME /home/oracle/.bashrc; then
+		echo 'INSTALLER: Environment variables previously set; retaining.'
+	else
+		echo "export PATH=\$PATH:\$ORACLE_HOME/bin" >> /home/oracle/.bashrc
+		echo "export MW_HOME=$MW_HOME" >> /home/oracle/.bashrc
+		echo "export WLS_HOME=$MW_HOME/wlserver" >> /home/oracle/.bashrc
+		echo "export WL_HOME=$WLS_HOME" >> /home/oracle/.bashrc
+		echo "export JAVA_HOME=$JAVA_PATH" >> /home/oracle/.bashrc
+		echo "export JAVA_HOME=$JAVA_PATH" >> /root/.bashrc
+		echo "export PATH=$JAVA_HOME/bin:\$PATH" >> /home/oracle/.bashrc
+		echo "export OIPA_HOME=$OIPA_HOME" >> /home/oracle/.bashrc
+		echo "export PC_HOME=$PC_HOME" >> /home/oracle/.bashrc
+		echo 'INSTALLER: Environment variables set'
+	fi
 
 	# Install JDK 1.8
 	if [ -f "$JAVA_HOME/bin/java" ]; then
@@ -81,12 +85,11 @@ else
 		# Prepare OIPA by unzipping to target directory, and downloading external files to lib.
 		unzip -n "/vagrant/${OIPAWLSZIP}" -d $OIPA_HOME
 		mkdir -p /vagrant/tmp
-		wget -O /vagrant/tmp/aspectj-1.8.10.jar $ASPECTJ_URL
-		unzip /vagrant/tmp/aspectj-1.8.10.jar -d /vagrant/tmp
+		echo "INSTALLER: running wget -O /vagrant/tmp/aspectj-1.8.10.jar \"$ASPECTJ_URL\""
+		wget -O /vagrant/tmp/aspectj-1.8.10.jar "$ASPECTJ_URL" && unzip /vagrant/tmp/aspectj-1.8.10.jar -d /vagrant/tmp		
+		wget -O $OIPA_HOME/lib/log4j-1.2.17.jar "$LOG4J_URL"
 		mv /vagrant/tmp/lib/aspectjweaver.jar $OIPA_HOME/lib
-		mv /vagrant/tmp/lib/aspectjrt.jar $OIPA_HOME/lib
-		wget -O $OIPA_HOME/lib/log4j-1.2.17.jar $LOG4J_URL
-
+		mv /vagrant/tmp/lib/aspectjrt.jar $OIPA_HOME/lib		
 		cp $MW_HOME/oracle_common/modules/oracle.osdt/osdt_core.jar $OIPA_HOME/lib
 		cp $MW_HOME/oracle_common/modules/oracle.osdt/osdt_cert.jar $OIPA_HOME/lib
 		cp $MW_HOME/oracle_common/modules/oracle.pki/oraclepki.jar $OIPA_HOME/lib

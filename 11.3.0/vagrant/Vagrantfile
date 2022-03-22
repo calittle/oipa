@@ -76,7 +76,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   VM_WLS = default_s('VM_WLS','12.2.1.4.0')
   VM_DB_USER_OIPA = default_s('VM_DB_USER_OIPA','oipa')
   VM_DB_USER_IVS = default_s('VM_DB_USER_IVS','oipaivs')
-  VM_OIPA_URL_ASPECTJ = default_s('VM_OIPA_URL_ASPECTJ','https://www.eclipse.org/downloads/download.php?file=/tools/aspectj/aspectj-1.8.10.jar&mirror_id=1135')
+  VM_OIPA_URL_ASPECTJ = default_s('VM_OIPA_URL_ASPECTJ','https://eclipse.mirror.rafal.ca/tools/aspectj/aspectj-1.8.10.jar')
   VM_OIPA_URL_LOG4J = default_s('VM_OIPA_URL_LOG4J','https://archive.apache.org/dist/logging/log4j/1.2.17/log4j-1.2.17.jar')
 
   VM_ZIP_OIPADB = default_s('VM_ZIP_OIPADB','V997069-01.zip')
