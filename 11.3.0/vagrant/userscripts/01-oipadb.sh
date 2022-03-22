@@ -19,7 +19,7 @@ else
 	echo "ORACLE PASSWORD FOR $USER_OIPA and $USER_IVS : $ORACLE_PWD";
 
 	# unzip oipa DB installer.
-	unzip -n /vagrant/V997069-01.zip -d /home/oracle
+	unzip -n "/vagrant/${$OIPADBZIP}" -d /home/oracle
 	chown oracle:oinstall -R /home/oracle
 
 	if [ -f "/opt/oracle/oipadb-step1.txt" ]; then

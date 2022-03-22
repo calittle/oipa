@@ -46,29 +46,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # If not specified, will be set to match host time zone (if possible)
   VM_SYSTEM_TIMEZONE = default_s('VM_SYSTEM_TIMEZONE', host_tz)
 
-  # Oracle base directory
   VM_ORACLE_BASE = default_s('VM_ORACLE_BASE', '/opt/oracle')
-
-  # Oracle home directory
   VM_ORACLE_HOME = default_s('VM_ORACLE_HOME', '/opt/oracle/product/19c/dbhome_1')
-
-  # Oracle SID
   VM_ORACLE_SID = default_s('VM_ORACLE_SID', 'ORCLCDB')
-
-  # PDB name
   VM_ORACLE_PDB = default_s('VM_ORACLE_PDB', 'ORCLPDB1')
-
-  # Database character set
   VM_ORACLE_CHARACTERSET = default_s('VM_ORACLE_CHARACTERSET', 'AL32UTF8')
 
   # Oracle Database edition
   # Valid values are 'EE' for Enterprise Edition or 'SE2' for Standard Edition 2
   VM_ORACLE_EDITION = default_s('VM_ORACLE_EDITION', 'EE')
-
-  # Listener port
   VM_LISTENER_PORT = default_i('VM_LISTENER_PORT', 1521)
-
-  # EM Express port
   VM_EM_EXPRESS_PORT = default_i('VM_EM_EXPRESS_PORT', 5500)
 
   # Oracle Database password for SYS, SYSTEM and PDBADMIN accounts
@@ -77,7 +64,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ## database password, you need to fill it in here!
   VM_ORACLE_PWD = default_s('VM_ORACLE_PWD', '')
 
-  # Oracle Middleware home directory
   VM_MW_HOME = default_s('VM_MW_HOME','/opt/oracle/middleware')
   VM_MW_DOMAIN = default_s('VM_MW_DOMAIN','oipa')
   VM_WLS_PORT_ADMIN = default_s('VM_WLS_PORT_ADMIN',7001)
@@ -85,21 +71,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   VM_WLS_PALETTECONFIG_PORT = default_s('VM_WLS_PALETTECONFIG_PORT',11001)
   VM_WLS_OIPA_SSLPORT = default_s('VM_WLS_OIPA_PORT',10002)
   VM_WLS_PALETTECONFIG_SSLPORT = default_s('VM_WLS_PALETTECONFIG_PORT',11002)
-  
-  # JDK Version
   VM_JDK = default_s('VM_JDK','8u311')
   VM_JAVA_PATH = default_s('VM_JAVA_PATH','/usr/java/jdk1.8.0_311-amd64')
-
-  # WLS Version
   VM_WLS = default_s('VM_WLS','12.2.1.4.0')
-
-  # OIPA database users
   VM_DB_USER_OIPA = default_s('VM_DB_USER_OIPA','oipa')
   VM_DB_USER_IVS = default_s('VM_DB_USER_IVS','oipaivs')
-
-  # OIPA components
   VM_OIPA_URL_ASPECTJ = default_s('VM_OIPA_URL_ASPECTJ','https://www.eclipse.org/downloads/download.php?file=/tools/aspectj/aspectj-1.8.10.jar&mirror_id=1135')
   VM_OIPA_URL_LOG4J = default_s('VM_OIPA_URL_LOG4J','https://archive.apache.org/dist/logging/log4j/1.2.17/log4j-1.2.17.jar')
+
+  VM_ZIP_OIPADB = default_s('VM_ZIP_OIPADB','V997069-01.zip')
+  VM_ZIP_OIPAWLS = default_s('VM_ZIP_OIPAWLS','V997071-01.zip')
+  VM_ZIP_ORACLEDB = default_s('VM_ZIP_ORACLEDB','LINUX.X64_193000_db_home.zip')
+  VM_ZIP_PCWLS = default_s('VM_ZIP_PCWLS','V997078-01.zip')
 end
 
 # Convenience methods
@@ -220,7 +203,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
        "USER_OIPA" => VM_DB_USER_OIPA,
        "USER_IVS"  => VM_DB_USER_IVS,
        "ASPECTJ_URL" => VM_OIPA_URL_ASPECTJ,
-       "LOG4J_URL" => VM_OIPA_URL_LOG4J
+       "LOG4J_URL" => VM_OIPA_URL_LOG4J,
+       "OIPADBZIP" => VM_ZIP_OIPADB,
+       "ORACLEDBZIP" => VM_ZIP_ORACLEDB,
+       "OIPAWLSZIP" => VM_ZIP_OIPAWLS,
+       "PCZIP" => VM_ZIP_PCWLS
     }
 
 end
