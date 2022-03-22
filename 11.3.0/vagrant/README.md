@@ -137,8 +137,10 @@ Parameters are considered in the following order (first one wins):
 * `VM_WLS` (default: `12.2.1.4.0`): WebLogic server version used (must align with download package obtained from [Getting Started](#Getting-Started))
 
 ### OIPA parameters
-* `VM_ZIP_OIPA_DB` (default: `V997069-01.zip`): The zip package containing the OIPA DB installation.
-
+* `VM_ZIP_OIPA_DB` (default: `V997069-01.zip`): The zip package containing the OIPA DB installation files.
+* `VM_ZIP_OIPAWLS` (default: `V997071-01.zip`): The zip package containing the OIPA WebLogic installation files.
+* `VM_ZIP_ORACLEDB` (default: `LINUX.X64_193000_db_home.zip`): The zip package containing the Oracle datbase installer.
+* `VM_ZIP_PCWLS` (default: `V997078-01.zip`): The zip package containing the OIPA Palette Config installation files.
 * `VM_DB_USER_OIPA` (default: `oipa`): The db user that owns OIPA tables. Password is set to `VM_ORACLE_PWD`.
 * `VM_DB_USER_IVS` (default: `oipaivs`): The db user that owns IVS tables. Password is set to `VM_ORACLE_PWD`.
 * `VM_OIPA_URL_ASPECTJ` (default: `https://eclipse.mirror.rafal.ca/tools/aspectj/aspectj-1.8.10.jar`): The *direct download URL* to download AspectJ (OIPA prerequisite component). Download is automated. To find a different mirror and upload the link, search here: https://www.eclipse.org/downloads/download.php?file=/tools/aspectj/aspectj-1.8.10.jar
