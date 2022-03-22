@@ -36,33 +36,38 @@ else
 	echo 'INSTALLER: swap adjusted.'
 fi
 
-# get up to date
-yum upgrade -y
+if [ -f "/opt/oracle/sysupdate.txt" ]; then
+	echo 'INSTALLER: system update skipped; delete /opt/oracle/sysupdate.txt to provision.'
+else
+	# get up to date
+	yum upgrade -y
 
-echo 'INSTALLER: System updated'
+	echo 'INSTALLER: System updated'
 
-# fix locale warning
-yum reinstall -y glibc-common
-echo LANG=en_US.utf-8 >> /etc/environment
-echo LC_ALL=en_US.utf-8 >> /etc/environment
+	# fix locale warning
+	yum reinstall -y glibc-common
+	echo LANG=en_US.utf-8 >> /etc/environment
+	echo LC_ALL=en_US.utf-8 >> /etc/environment
 
-echo 'INSTALLER: Locale set'
+	echo 'INSTALLER: Locale set'
 
-# set system time zone
-sudo timedatectl set-timezone $SYSTEM_TIMEZONE
-echo "INSTALLER: System time zone set to $SYSTEM_TIMEZONE"
+	# set system time zone
+	sudo timedatectl set-timezone $SYSTEM_TIMEZONE
+	echo "INSTALLER: System time zone set to $SYSTEM_TIMEZONE"
 
-# Install Oracle Database prereq and openssl packages
-yum install -y oracle-database-preinstall-19c openssl
+	# Install Oracle Database prereq and openssl packages
+	yum install -y oracle-database-preinstall-19c openssl
 
-echo 'INSTALLER: Oracle preinstall and openssl complete'
+	echo 'INSTALLER: Oracle preinstall and openssl complete'
 
-# create directories
-mkdir -p $ORACLE_HOME
-mkdir -p /u01/app
-ln -sf $ORACLE_BASE /u01/app/oracle
+	# create directories
+	mkdir -p $ORACLE_HOME
+	mkdir -p /u01/app
+	ln -sf $ORACLE_BASE /u01/app/oracle
 
-echo 'INSTALLER: Oracle directories created'
+	echo 'INSTALLER: Oracle directories created'
+	su -l oracle -c "echo 'delete this file to rerun system update. '>>/opt/oracle/sysupdate.txt"
+fi
 
 # set environment variables if they don't already exist
 if grep -q ORACLE_SID /home/oracle/.bashrc; then
