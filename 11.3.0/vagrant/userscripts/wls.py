@@ -240,12 +240,12 @@ set( 'DebugEnabled','false');
 
 updateDomain();
 
-createJDBCDatasource( 'ADMINSERVERDS_0', 'jdbc/ADMINSERVERDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort,jdbcDatabaseName, jdbcDatabaseNameType, nameOipaServer );
-createJDBCDatasource( 'ADMINSERVERRESOURCEDS_0', 'jdbc/ADMINSERVERRESOURCEDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, nameOipaServer );
-createJDBCDatasource( 'ADMINSERVERSEARCHDS_0', 'jdbc/ADMINSERVERSEARCHDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, nameOipaServer );
-createJDBCDatasource( 'ADMINSERVERREADONLYDS_0', 'jdbc/ADMINSERVERREADONLYDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, nameOipaServer );
-createJDBCDatasource( 'PALETTECONFIGDS_0', 'jdbc/PALETTECONFIGDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, namePCServer );
-createJDBCDatasource( 'PALETTECONFIGIVSDS_0', 'jdbc/PALETTECONFIGIVSDS',  jdbcIvsUser, jdbcIvsPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, namePCServer);
+createJDBCDatasource( 'ADMINSERVERDS_0', 'ADMINSERVERDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort,jdbcDatabaseName, jdbcDatabaseNameType, nameOipaServer );
+createJDBCDatasource( 'ADMINSERVERRESOURCEDS_0', 'ADMINSERVERRESOURCEDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, nameOipaServer );
+createJDBCDatasource( 'ADMINSERVERSEARCHDS_0', 'ADMINSERVERSEARCHDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, nameOipaServer );
+createJDBCDatasource( 'ADMINSERVERREADONLYDS_0', 'ADMINSERVERREADONLYDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, nameOipaServer );
+createJDBCDatasource( 'PALETTECONFIGDS_0', 'PALETTECONFIGDS',  jdbcOipaUser, jdbcOipaPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, namePCServer );
+createJDBCDatasource( 'PALETTECONFIGIVSDS_0', 'PALETTECONFIGIVSDS',  jdbcIvsUser, jdbcIvsPwd, jdbcDatabaseHost, jdbcDatabasePort, jdbcDatabaseName, jdbcDatabaseNameType, namePCServer);
 
 # #create_cluster_offline(getDomainDir(),None, namejmsCluster, None);
 # createJMSServer( nameJmsServer, portJmsServer, portJmsSslServer );
