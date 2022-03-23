@@ -45,7 +45,10 @@ exit;
 EOF"
 		su -l oracle -c "echo 'delete this file to recreate oipa users. Note you may need to drop everything that was created to redo this step!'>>/opt/oracle/oipadb-step1.txt"
 	fi
-	# TODO --> set up TDE 
+	# TODO --> set up TDE 	
+	export ORACLE_CDB=$ORACLE_SID
+	export ORACLE_SID=$ORACLE_PDB
+	export PATH=$ORACLE_HOME/bin:$PATH
 
 	# import the dump files
 	if [ -f "/opt/oracle/oipadb-step2.txt" ]; then
@@ -53,27 +56,21 @@ EOF"
 	else    
 		# a hack to force the errors to return true so shell provisioner doesn't crap the bed.
 		cd /home/oracle
-		. oraenv <<EOF
-$ORACLE_PDB
-$ORACLE_HOME
-EOF
 		echo "$ORACLE_PWD" | impdp system@$ORACLE_PDB  directory=oipa_dir dumpfile=oipa_pas.dmp logfile=import_pas.log full=yes remap_schema=oipaqa:$USER_OIPA &> impdp_pas.out | true;
 		su -l oracle -c "echo 'delete this file to reimport oipa db. Note you may need to drop everything that was created to redo this step!'>>/opt/oracle/oipadb-step2.txt"
-		echo "INSTALLER: oipa_pas.dmp imported. Check impdp_oipa.out for any notable errors as these will not be trapped!";
+		echo "INSTALLER: oipa_pas.dmp imported. Check impdp_oipa.out for any notable errors as these will not be trapped!";		
 	fi
 	if [ -f "/opt/oracle/oipadb-step3.txt" ]; then
 		echo "INSTALLER: OIPA IVS DB import skipped; delete /opt/oracle/oipadb-step3.txt to reprovision."
 	else    		
 		# a hack to force the errors to return true so shell provisioner doesn't crap the bed.
 		cd /home/oracle
-		. oraenv <<EOF
-$ORACLE_PDB
-$ORACLE_HOME
-EOF
 		echo "$ORACLE_PWD" | impdp system@$ORACLE_PDB directory=oipa_dir dumpfile=oipa_ivs.dmp logfile=OIPA_IVS.log full=yes remap_schema=oipa_ivs:$USER_IVS &> impdp_ivs.out | true;
 		echo "INSTALLER: oipa_ivs.dmp imported. Check impdp_ivs.out for any notable errors as these will not be trapped!";
 		su -l oracle -c "echo 'delete this file to reimport oipa ivs db. Note you may need to drop everything that was created to redo this step!'>>/opt/oracle/oipadb-step3.txt"
 	fi
+	export ORACLE_SID=$ORACLE_CDB
+
 	chown oracle:oinstall -R /home/oracle
 	# TODO --> create read only user
 
