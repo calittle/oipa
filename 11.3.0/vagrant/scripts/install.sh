@@ -145,12 +145,12 @@ else
 
 		# Post DB setup tasks
 		su -l oracle -c "sqlplus / as sysdba <<EOF
-			ALTER PLUGGABLE DATABASE $ORACLE_PDB SAVE STATE;
-			EXEC DBMS_XDB_CONFIG.SETGLOBALPORTENABLED (TRUE);
-			ALTER SYSTEM SET LOCAL_LISTENER = '(ADDRESS = (PROTOCOL = TCP)(HOST = 0.0.0.0)(PORT = $LISTENER_PORT))' SCOPE=BOTH;
-			ALTER SYSTEM REGISTER;
-			exit;
-			EOF"
+ALTER PLUGGABLE DATABASE $ORACLE_PDB SAVE STATE;
+EXEC DBMS_XDB_CONFIG.SETGLOBALPORTENABLED (TRUE);
+ALTER SYSTEM SET LOCAL_LISTENER = '(ADDRESS = (PROTOCOL = TCP)(HOST = 0.0.0.0)(PORT = $LISTENER_PORT))' SCOPE=BOTH;
+ALTER SYSTEM REGISTER;
+exit;
+EOF"
 #    oipa-vagrant: -bash: line 6: warning: here-document at line 0 delimited by end-of-file (wanted `EOF')
 		rm /vagrant/ora-response/dbca.rsp
 		su -l oracle -c "echo 'delete this file to set CDB/PDB databases'>>/opt/oracle/db-step3.txt"
