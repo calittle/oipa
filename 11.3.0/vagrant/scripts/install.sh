@@ -66,7 +66,7 @@ else
 	ln -sf $ORACLE_BASE /u01/app/oracle
 
 	echo 'INSTALLER: Oracle directories created'
-	su -l oracle -c "echo 'delete this file to rerun system update. '>>/opt/oracle/sysupdate.txt"
+	echo 'delete this file to rerun system update. '>>/opt/oracle/sysupdate.txt
 fi
 
 # set environment variables if they don't already exist
