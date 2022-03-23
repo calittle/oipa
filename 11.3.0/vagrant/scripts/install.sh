@@ -15,6 +15,50 @@
 set -e
 
 echo 'INSTALLER: Started up'
+echo 'INSTALLER: Checking required installation packages...'
+# check for required install files.
+if [ -f "/vagrant/fmw_${WLS_VERSION}_wls_lite_Disk1_1of1.zip" ]; then
+	echo "/vagrant/fmw_${WLS_VERSION}_wls_lite_Disk1_1of1.zip found"
+else
+	echo "INSTALLER: fmw_${WLS_VERSION}_wls_lite_Disk1_1of1.zip NOT FOUND. Review README.md for instructions."
+	exit 1
+fi
+if [ -f "/vagrant/${ORACLEDBZIP}" ]; then
+	echo "/vagrant/${ORACLEDBZIP} found"
+else
+	echo "INSTALLER: ${ORACLEDBZIP} NOT FOUND. Review README.md for instructions."
+	exit 1
+fi
+if [ -f "/vagrant/${PCZIP}" ]; then
+	echo "/vagrant/${PCZIP} found"
+else
+	echo "INSTALLER: ${PCZIP} NOT FOUND. Review README.md for instructions."
+	exit 1
+fi
+if [ -f "/vagrant/${OIPAWLSZIP}" ]; then
+	echo "/vagrant/${OIPAWLSZIP} found"
+else
+	echo "INSTALLER: ${OIPAWLSZIP} NOT FOUND. Review README.md for instructions."
+	exit 1
+fi
+if [ -f "/vagrant/${OIPADBZIP}" ]; then
+	echo "/vagrant/${OIPADBZIP} found"
+else
+	echo "INSTALLER: ${OIPADBZIP} NOT FOUND. Review README.md for instructions."
+	exit 1
+fi
+if [ -f "/vagrant/jdk-${JAVA_VERSION}-linux-x64.rpm" ]; then
+	echo "/vagrant/jdk-${JAVA_VERSION}-linux-x64.rpm found"
+else
+	echo "INSTALLER: jdk-${JAVA_VERSION}-linux-x64.rpm NOT FOUND. Review README.md for instructions."
+	exit 1
+fi
+if [ -f "/vagrant/${PCZIP}" ]; then
+	echo "/vagrant/${PCZIP} found"
+else
+	echo "INSTALLER: ${PCZIP} NOT FOUND. Review README.md for instructions."
+	exit 1
+fi
 
 # andy.little@oracle.com 21Mar2022
 # Oracle DB requires swap size = memory size if membory > 4GB
