@@ -5,7 +5,7 @@
 # Copyright (c) 1982-2018 Oracle and/or its affiliates. All rights reserved.
 # 
 # Since: July, 2018
-# Author: gerald.venzl@oracle.com
+# Author: gerald.venzl@oracle.com, andy.little@oracle.com
 # Description: Installs Oracle database software
 # 
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
