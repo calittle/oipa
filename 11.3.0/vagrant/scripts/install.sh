@@ -89,6 +89,7 @@ else
 	if [ -f "/opt/oracle/db-step1.txt" ]; then
 		echo "INSTALLER: Database unpack skipped."
 	else
+		echo 'INSTALLER: Unpacking database installer.'
 		unzip -qn "/vagrant/$ORACLEDBZIP" -d $ORACLE_HOME/
 		cp /vagrant/ora-response/db_install.rsp.tmpl /vagrant/ora-response/db_install.rsp
 		sed -i -e "s|###ORACLE_BASE###|$ORACLE_BASE|g" /vagrant/ora-response/db_install.rsp
@@ -101,7 +102,7 @@ else
 		$ORACLE_HOME/root.sh
 		rm /vagrant/ora-response/db_install.rsp
 		su -l oracle -c "echo 'delete this file to unpack and setup database'>>/opt/oracle/db-step1.txt"
-		echo 'INSTALLER: Oracle software installed'
+		echo 'INSTALLER: Oracle database software installed'
 	fi
 	if [ -f "/opt/oracle/db-step2.txt" ]; then
 		echo "INSTALLER: Listener setup skipped."
