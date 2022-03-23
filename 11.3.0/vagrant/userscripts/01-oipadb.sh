@@ -48,16 +48,26 @@ else
 		echo "INSTALLER: OIPA DB import skipped; delete /opt/oracle/oipadb-step2.txt to reprovision."
 	else    
 		# a hack to force the errors to return true so shell provisioner doesn't crap the bed.
-		su -l oracle -c "echo $ORACLE_PWD | impdp system@orclpdb1 directory=oipa_dir dumpfile=oipa_pas.dmp logfile=OIPA_PAS.log full=yes remap_schema=oipaqa:$USER_OIPA &> import_1.out | true"
-		echo "INSTALLER: oipa_pas.dmp imported. Check import_1.out for any notable errors as these will not be trapped!";
+		ORACLE_SID=$ORACLE_PDB
+		ORACLE_HOME=$ORACLE_HOME
+		cd /home/oracle
+		echo "$ORACLE_PWD" | impdp system@$ORACLE_SID  directory=oipa_dir dumpfile=oipa_pas.dmp logfile=import_pas.log full=yes remap_schema=oipaqa:oipa &> impdp_pas.out | true;
 		su -l oracle -c "echo 'delete this file to reimport oipa db. Note you may need to drop everything that was created to redo this step!'>>/opt/oracle/oipadb-step2.txt"
+		echo "INSTALLER: oipa_pas.dmp imported. Check impdp_oipa.out for any notable errors as these will not be trapped!";
+		ORACLE_SID=$ORACLE_SID
 	fi
 	if [ -f "/opt/oracle/oipadb-step3.txt" ]; then
 		echo "INSTALLER: OIPA IVS DB import skipped; delete /opt/oracle/oipadb-step3.txt to reprovision."
 	else    
-		su -l oracle -c "echo $ORACLE_PWD | impdp system@orclpdb1 directory=oipa_dir dumpfile=oipa_ivs.dmp logfile=OIPA_IVS.log full=yes remap_schema=oipa_ivs:$USER_IVS &> import_2.out | true"         
-		echo "INSTALLER: oipa_ivs.dmp imported. Check import_1.out for any notable errors as these will not be trapped!";
+		
+		# a hack to force the errors to return true so shell provisioner doesn't crap the bed.
+		ORACLE_SID=$ORACLE_PDB
+		ORACLE_HOME=$ORACLE_HOME
+		cd /home/oracle
+		echo "$ORACLE_PWD" | impdp system@$ORACLE_SID directory=oipa_dir dumpfile=oipa_ivs.dmp logfile=OIPA_IVS.log full=yes remap_schema=oipa_ivs:$USER_IVS &> impdp_ivs.out | true;
+		echo "INSTALLER: oipa_ivs.dmp imported. Check impdp_ivs.out for any notable errors as these will not be trapped!";
 		su -l oracle -c "echo 'delete this file to reimport oipa ivs db. Note you may need to drop everything that was created to redo this step!'>>/opt/oracle/oipadb-step3.txt"
+		ORACLE_SID=$ORACLE_SID
 	fi
 
 	# TODO --> create read only user
