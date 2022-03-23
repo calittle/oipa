@@ -4,7 +4,7 @@
 # Copyright (c) 2018, 2020 Oracle and/or its affiliates.
 #
 # Since: July, 2018
-# Author: gerald.venzl@oracle.com
+# Author: gerald.venzl@oracle.com, andy.little@oracle.com
 # Description: Creates an Oracle database Vagrant virtual machine.
 # Optional plugins:
 #     vagrant-env (use .env files for configuration)
@@ -76,11 +76,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   VM_MW_HOME = default_s('VM_MW_HOME','/opt/oracle/middleware')
   VM_MW_DOMAIN = default_s('VM_MW_DOMAIN','oipa')
-  VM_WLS_PORT_ADMIN = default_s('VM_WLS_PORT_ADMIN',7001)
-  VM_WLS_OIPA_PORT = default_s('VM_WLS_OIPA_PORT',10001)
-  VM_WLS_PALETTECONFIG_PORT = default_s('VM_WLS_PALETTECONFIG_PORT',11001)
-  VM_WLS_OIPA_SSLPORT = default_s('VM_WLS_OIPA_PORT',10002)
-  VM_WLS_PALETTECONFIG_SSLPORT = default_s('VM_WLS_PALETTECONFIG_PORT',11002)
+  VM_WLS_PORT_ADMIN = default_i('VM_WLS_PORT_ADMIN',7001)
+  VM_WLS_OIPA_PORT = default_i('VM_WLS_OIPA_PORT',10001)
+  VM_WLS_PALETTECONFIG_PORT = default_i('VM_WLS_PALETTECONFIG_PORT',11001)
+  VM_WLS_OIPA_SSLPORT = default_i('VM_WLS_OIPA_PORT',10002)
+  VM_WLS_PALETTECONFIG_SSLPORT = default_i('VM_WLS_PALETTECONFIG_PORT',11002)
   VM_JDK = default_s('VM_JDK','8u311')
   VM_JAVA_PATH = default_s('VM_JAVA_PATH','/usr/java/jdk1.8.0_311-amd64')
   VM_WLS = default_s('VM_WLS','12.2.1.4.0')
