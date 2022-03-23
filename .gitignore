@@ -1,5 +1,5 @@
 RP
-install
+**/install/*
 .vagrant
 
 .DS_Store
