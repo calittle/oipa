@@ -89,7 +89,7 @@ else
 	if [ -f "/opt/oracle/db-step1.txt" ]; then
 		echo "INSTALLER: Database unpack skipped."
 	else
-		unzip -n "/vagrant/$ORACLEDBZIP" -d $ORACLE_HOME/
+		unzip -qn "/vagrant/$ORACLEDBZIP" -d $ORACLE_HOME/
 		cp /vagrant/ora-response/db_install.rsp.tmpl /vagrant/ora-response/db_install.rsp
 		sed -i -e "s|###ORACLE_BASE###|$ORACLE_BASE|g" /vagrant/ora-response/db_install.rsp
 		sed -i -e "s|###ORACLE_HOME###|$ORACLE_HOME|g" /vagrant/ora-response/db_install.rsp

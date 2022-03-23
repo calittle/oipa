@@ -67,7 +67,7 @@ else
 	else
 		# Install WLS
 		echo "INSTALLER: Installing WebLogic version $WLS_VERSION"
-		unzip -n "/vagrant/fmw_${WLS_VERSION}_wls_lite_Disk1_1of1.zip" -d /home/oracle
+		unzip -qn "/vagrant/fmw_${WLS_VERSION}_wls_lite_Disk1_1of1.zip" -d /home/oracle
 		chown oracle:oinstall -R /home/oracle
 		cp /vagrant/ora-response/wls.rsp.tmpl /vagrant/ora-response/wls.rsp
 		sed -i -e "s|###MW_HOME###|$MW_HOME|g" /vagrant/ora-response/wls.rsp
@@ -83,10 +83,10 @@ else
 	else
 		
 		# Prepare OIPA by unzipping to target directory, and downloading external files to lib.
-		unzip -n "/vagrant/${OIPAWLSZIP}" -d $OIPA_HOME
+		unzip -qn "/vagrant/${OIPAWLSZIP}" -d $OIPA_HOME
 		mkdir -p /vagrant/tmp
 		wget -q -O /vagrant/tmp/aspectj-1.8.10.jar "$ASPECTJ_URL" 
-		unzip /vagrant/tmp/aspectj-1.8.10.jar -d /vagrant/tmp		
+		unzip -qn /vagrant/tmp/aspectj-1.8.10.jar -d /vagrant/tmp		
 		wget -q -O $OIPA_HOME/lib/log4j-1.2.17.jar "$LOG4J_URL"
 		mv /vagrant/tmp/lib/aspectjweaver.jar $OIPA_HOME/lib
 		mv /vagrant/tmp/lib/aspectjrt.jar $OIPA_HOME/lib		
@@ -99,7 +99,7 @@ else
 		sed -i -e "s|D:/logs/oipa%u.log|$OIPA_HOME/oipa%u.log|g" $OIPA_HOME/conf/logging.properties
 
 		# Prepare PaletteConfig 
-		unzip -n "/vagrant/${PCZIP}" -d /vagrant/tmp
+		unzip -qn "/vagrant/${PCZIP}" -d /vagrant/tmp
 		mkdir -p $PC_HOME/conf
 		mkdir -p $PC_HOME/lib
 		mkdir -p $PC_HOME/uploads
