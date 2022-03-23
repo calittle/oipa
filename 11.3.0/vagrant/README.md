@@ -19,24 +19,22 @@ can be easily adapted to Windows-based systems.
 1. Clone this repository `git clone https://github.com/calittle/oipa.git` into a folder of your choice, e.g. `vagrant-projects`
 2. Change into the `vagrant-projects/oipa/11.3.0` directory. This is the *project root* directory.
 3. Download the installation zip files into the *project root* directory.
-  1. From [OTN](http://www.oracle.com/technetwork/database/enterprise-edition/downloads/index.html) download Oracle 19c (`LINUX.X64_193000_db_home.zip`) for Linux x64.
-  2. From [eDelivery](http://edelivery.oracle.com) download the following `DLP: Oracle Insurance Policy Administration for Life and Annuity 11.3.0.0.0` zip files for Linux/WebLogic:
-      - `V997064-01.zip`, OIPA_11.3.0.0_AdminConsole_WebLogic, 57.0 MB
-      - `V997069-01.zip`, OIPA_11.3.0.0_Database_Oracle, 49.2 MB
-      - `V997071-01.zip`, OIPA_11.3.0.0_PASJava_WebLogic, 217.8 MB
-      - `V997074-01.zip`, OIPA_11.3.0.0_ServiceLayer_WebLogic, 65.2 MB **note this is currently not used **
-  3. From [OTN](https://www.oracle.com/java/technologies/javase/javase8u211-later-archive-downloads.html) Download JDK 1.8 Linux x64 RPM Package `jdk-8u311-linux-x64.rpm`.
-  4. From [OTN](https://www.oracle.com/middleware/technologies/weblogic-server-downloads.html) download WebLogic Server 12.2.1.4 `fmw_12.2.1.4.0_wls_lite_Disk1_1of1.zip`. 
-  
+  - Oracle 19c (`LINUX.X64_193000_db_home.zip`) for Linux x64 from [OTN](http://www.oracle.com/technetwork/database/enterprise-edition/downloads/index.html) 
+  - DLP: Oracle Insurance Policy Administration for Life and Annuity 11.3.0.0.0 zip files for Linux/WebLogic from [eDelivery](http://edelivery.oracle.com) 
+    - `V997064-01.zip`, OIPA_11.3.0.0_AdminConsole_WebLogic, 57.0 MB
+    - `V997069-01.zip`, OIPA_11.3.0.0_Database_Oracle, 49.2 MB
+    - `V997071-01.zip`, OIPA_11.3.0.0_PASJava_WebLogic, 217.8 MB
+    - `V997074-01.zip`, OIPA_11.3.0.0_ServiceLayer_WebLogic, 65.2 MB **note this is currently not used **
+  - JDK 1.8 Linux x64 RPM Package `jdk-8u311-linux-x64.rpm` from [OTN](https://www.oracle.com/java/technologies/javase/javase8u211-later-archive-downloads.html)
+  - WebLogic Server 12.2.1.4 `fmw_12.2.1.4.0_wls_lite_Disk1_1of1.zip` from [OTN](https://www.oracle.com/middleware/technologies/weblogic-server-downloads.html)
 4. Run `vagrant up`
-   1. The first time you run this it will provision everything and may take a while. Ensure you have a good internet connection as the scripts will update the VM to the latest via `yum`.
-   2. The main script is in `scripts\install.sh` - this takes care of installing and deploying the database.
-   3. Subsequent script files in `userscripts` are executed:
-      1. `01-oipadb1.sh` unpacks and imports the OIPA database artifacts.
-      2. `02-weblogic.sh` creates the WebLogic domain and deploys the applications using the `wls.py` script.
-   5. The installation can be customized, if desired (see [Configuration](#configuration)).
-5. Connect to the database (see [Connecting to Oracle](#connecting-to-oracle-database))
-6. You can shut down the VM via the usual `vagrant halt` and then start it up again via `vagrant up`. You can also [reprovision[(#reprovision)]].
+- The first time you run this it will provision everything and may take a while. Ensure you have a good internet connection as the scripts will update the VM to the latest via `yum`. 
+- The main script is in `scripts\install.sh` - this takes care of installing and deploying the database. Subsequent script files in `userscripts` are executed:
+  - `01-oipadb1.sh` unpacks and imports the OIPA database artifacts.
+  - `02-weblogic.sh` creates the WebLogic domain and deploys the applications using the `wls.py` script.
+- The installation can be customized, if desired (see [Configuration](#configuration)).
+- You can shut down the VM via the usual `vagrant halt` and then start it up again via `vagrant up`. 
+- You can also [reprovision](#reprovision).
 
 ## Connecting to Oracle Database
 
@@ -81,7 +79,17 @@ To run scripts in a specific order, prefix the file names with a number, e.g., `
 
 ## Reprovision
 
-Sometimes it may be necessary to reprovision the VM if something did not deploy correctly, or simply just to start over. To reprovision, make sure your VM is in a halted stated (e.g. `vagrant halt`) and then run `vagrant up --provision`). Before you do that, make sure you have corrected the elements of the deployment that failed. In order to provide more granular control over what steps are rerun, the deployment scripts create some simple txt files at various points of the deployment process. Delete these files to rerun that step. Note that there isn't a rollback, so sometimes you might need to undo what the deployment step did. This isn't foolproof, so use your best judgment (e.g. if you're not sure, just `vagrant destroy oipa-vagrant` and then `vagrant up` to redo the whole thing.) 
+Sometimes it may be necessary to reprovision the VM if something did not deploy correctly, or simply just to start over. To reprovision, make sure your VM is in a halted stated (e.g. `vagrant halt`) and then run `vagrant up --provision`). 
+
+Before you reprovision, make sure you have corrected the elements of the deployment that failed. In order to provide more granular control over what steps are rerun, the deployment scripts create `txt` files at various points of the deployment process. Delete the file(s) in order to rerun the provision step as indicated in the list below. 
+
+Note that there is no rollback feature, so if a step was completed, e.g. WebLogic domain was deployed and you want to redo it, you will need to undo what the deployment step did. This isn't foolproof, so use your best judgment (e.g. if you're not sure, just `vagrant destroy oipa-vagrant` and then `vagrant up` to redo the whole thing.) 
+
+*IMPORTANT* Before attempting a reprovision, you must update the `Vagrantfile` with your Oracle and/or WebLogic password. Edit the file and add your password(s) for the second parameter, inside the single quotes. If you want the password to be auto-generated, the second parameter *must be blank*.
+```
+  VM_ORACLE_PWD = default_s('VM_ORACLE_PWD', '')
+  VM_WLS_PWD = default_s('VM_WLS_PWD','')
+```
 
 - `/opt/oracle/dbinstalled.txt` - delete this file to redo the entire unpacking and installation of the database software, and listener configuration, CDB/PDB deployment, and database services.
 - `/opt/oracle/db-step1.txt` - delete this file to redo the database sfotware unpack and install.
