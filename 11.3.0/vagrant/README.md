@@ -79,7 +79,11 @@ To run scripts in a specific order, prefix the file names with a number, e.g., `
 
 ## Reprovision
 
-Sometimes it may be necessary to reprovision the VM if something did not deploy correctly, or simply just to start over. To reprovision, make sure your VM is in a halted stated (e.g. `vagrant halt`) and then run `vagrant up --provision`). Before you do that, make sure you have corrected the elements of the deployment that failed. In order to provide more granular control over what steps are rerun, the deployment scripts create some simple txt files at various points of the deployment process. Delete these files to rerun that step. Note that there isn't a rollback, so sometimes you might need to undo what the deployment step did. This isn't foolproof, so use your best judgment (e.g. if you're not sure, just `vagrant destroy oipa-vagrant` and then `vagrant up` to redo the whole thing.) 
+Sometimes it may be necessary to reprovision the VM if something did not deploy correctly, or simply just to start over. To reprovision, make sure your VM is in a halted stated (e.g. `vagrant halt`) and then run `vagrant up --provision`). 
+
+Before you reprovision, make sure you have corrected the elements of the deployment that failed. In order to provide more granular control over what steps are rerun, the deployment scripts create `txt` files at various points of the deployment process. Delete the file(s) in order to rerun the provision step as indicated in the list below. 
+
+Note that there is no rollback feature, so if a step was completed, e.g. WebLogic domain was deployed and you want to redo it, you will need to undo what the deployment step did. This isn't foolproof, so use your best judgment (e.g. if you're not sure, just `vagrant destroy oipa-vagrant` and then `vagrant up` to redo the whole thing.) 
 
 *IMPORTANT* Before attempting a reprovision, you must update the `Vagrantfile` with your Oracle and/or WebLogic password. Edit the file and add your password(s) for the second parameter, inside the single quotes. If you want the password to be auto-generated, the second parameter *must be blank*.
 ```
