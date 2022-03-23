@@ -14,6 +14,10 @@ if [ -f "/opt/oracle/oipadb.txt" ]; then
 	 echo "INSTALLER: OIPA DB setup skipped. Delete /opt/oracle/oipadb.txt to reprovision."
 else
 	echo 'INSTALLER: Started up 01-oipadb.sh'
+	
+	# set up path for oraenv. Perhaps the shell needs to be reconnected so we need not do this.
+	export PATH=/usr/local/bin:$PATH
+	
 	# set up password for oipa/oipaivs
 	export ORACLE_PWD=${ORACLE_PWD:-"`openssl rand -base64 8`1"}
 	echo "ORACLE PASSWORD FOR $USER_OIPA and $USER_IVS : $ORACLE_PWD";
