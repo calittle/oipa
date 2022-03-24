@@ -9,3 +9,5 @@ RP
 *.jar
 *.rpm
 *.properties
+
+*.local
