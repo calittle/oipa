@@ -37,7 +37,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # VM name
-  VM_NAME = default_s('VM_NAME', 'oipa-vagrant')
+  VM_NAME = default_s('VM_NAME', 'oipa-1130-vagrant')
 
   # Memory for the VM 
   VM_MEMORY = default_i('VM_MEMORY', 8192) 
